@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Especificação Técnica: Agente Inteligente Pendle (V5.1 - Mission-Critical)</title>
+    <title>Especificação Técnica: Agente Inteligente Pendle (V5.2 - Production)</title>
     <style>
         :root {
-            --bg-main: #fafbfe;
+            --bg-main: #f4f6fa;
             --bg-card: #ffffff;
             --text-main: #0f172a;
             --text-muted: #475569;
             --primary: #2563eb;
-            --primary-dark: #020617;
+            --primary-dark: #090d16;
             --accent: #0ea5e9;
-            --accent-light: #e0f2fe;
+            --accent-light: #f0f9ff;
             --border: #e2e8f0;
             --zebra: #f8fafc;
             --math-bg: #f1f5f9;
-            --code-bg: #090d16;
+            --code-bg: #0b0f19;
             --code-text: #f1f5f9;
             --state-alert: #e11d48;
             --state-failed: #ea580c;
-            --success-bg: #f0fdf4;
-            --success-border: #16a34a;
+            --callout-warn-bg: #fff7ed;
+            --callout-warn-border: #ea580c;
         }
 
         *, *::before, *::after {
@@ -39,7 +39,7 @@
         }
 
         .container {
-            max-width: 960px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 40px 24px;
         }
@@ -52,7 +52,7 @@
             border-radius: 8px;
             border-bottom: 4px solid var(--primary);
             margin-bottom: 35px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
         }
 
         .header-banner h1 {
@@ -95,7 +95,6 @@
             text-align: justify;
         }
 
-        /* Listas */
         ul, ol {
             margin-top: 0;
             margin-bottom: 16px;
@@ -141,7 +140,7 @@
             background-color: var(--zebra);
         }
 
-        /* Blocos Informativos / Callouts */
+        /* Callouts */
         .callout {
             background-color: var(--accent-light);
             border-left: 4px solid var(--accent);
@@ -150,6 +149,14 @@
             border-radius: 0 6px 6px 0;
         }
         
+        .callout-warn {
+            background-color: var(--callout-warn-bg);
+            border-left: 4px solid var(--callout-warn-border);
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
         .callout-title {
             font-weight: 700;
             color: var(--primary-dark);
@@ -175,13 +182,13 @@
             color: var(--primary-dark);
         }
 
-        /* Blocos de Código (JSON) */
+        /* Blocos de Código (JSON / Python) */
         pre {
             background-color: var(--code-bg);
             color: var(--code-text);
             padding: 20px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11.5px;
             overflow-x: auto;
             margin: 24px 0;
             font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
@@ -240,25 +247,25 @@
 
     <div class="container">
         <div class="header-banner">
-            <div class="subtitle">Documento de Engenharia de Sistemas Críticos — Versão Real-Time</div>
-            <h1>Agente Inteligente de Alocação Pendle (V5.1 - Mission-Critical Blueprint)</h1>
+            <div class="subtitle">Documento de Especificação Técnica e Operacional de Alta Fidelidade</div>
+            <h1>Agente Inteligente de Alocação Pendle (V5.2 - Mission-Critical Deployment)</h1>
         </div>
 
         <h2>1. Objetivo do Sistema</h2>
-        <p>O objetivo primário deste sistema é monitorar de forma determinística os mercados do protocolo Pendle Finance na rede Arbitrum, mapear descompassos quantitativos e assimetrias de preço entre tokens de rendimento (YT) e de principal (PT), e executar de maneira automatizada e agnóstica ordens de alocação/rebalanceamento. O sistema é regido por restrições matemáticas e de infraestrutura com o propósito de blindar o patrimônio gerido contra perdas por fricções invisíveis, decaimento alfa e volatilidade sistêmica.</p>
+        <p>O objetivo primário deste sistema é monitorar, predizer e arbitrar mercados do protocolo Pendle Finance na rede Arbitrum e ambientes Cross-Chain associados. O sistema gerencia o rebalanceamento dinâmico entre Yield Tokens (YT) e Principal Tokens (PT) usando inteligência preditiva acoplada para alternar regimes operacionais, mitigando sistematicamente riscos de cauda, slippage estrutural e custos de transporte invisíveis.</p>
 
         <h2>2. Modelo de Yield Nativos do Protocolo</h2>
-        <p>O algoritmo de monitoramento rege as suas premissas exclusivamente pela arquitetura de smart contracts do Pendle:</p>
+        <p>O algoritmo de monitoramento rege as suas premissas exclusivamente pela arquitetura matemática do Pendle:</p>
         <ul>
-            <li><b>Underlying APY:</b> Média móvel ponderada de 7 dias do rendimento nativo distribuído pelo ativo de lastro (ex: taxas de trading de pools originais ou juros de protocolos de empréstimo).</li>
-            <li><b>Implied APY:</b> Projeção anualizada de yield futuro precificada instantaneamente pelo mercado por meio da curva da AMM do Pendle. Determina a taxa de conversão presente dos ativos negociados.</li>
-            <li><b>Fixed APY:</b> Taxa de retorno garantida e imutável travada ao se adquirir o <b>Principal Token (PT)</b>, operando analogamente a um título de cupom zero. Numericamente equivalente ao Implied APY no instante exato de fechamento do swap.</li>
-            <li><b>Yield Token (YT):</b> Ativo que concede direito integral aos fluxos de rendimento gerados pelo ativo subjacente até o vencimento. O valor intrínseco do YT decai de forma assintótica rumo a zero com a aproximação da data de maturidade.</li>
-            <li><b>Mecanismo de Claim e Expiração:</b> Os yields acumulados pelo YT devem ser reivindicados de forma ativa via chamadas ao método <code class="math">claimYield()</code>. Caso o resgate não ocorra antes ou no exato instante da data de maturidade, todos os fluxos de caixa acumulados não reivindicados são permanentemente **zerados**, cessando os direitos contratuais do detentor.</li>
+            <li><b>Underlying APY:</b> Média móvel ponderada de 7 dias do rendimento nativo distribuído pelo ativo de lastro.</li>
+            <li><b>Implied APY:</b> Projeção anualizada de yield futuro precificada instantaneamente pela curva da AMM do Pendle.</li>
+            <li><b>Fixed APY:</b> Taxa de retorno garantida travada ao se adquirir o Principal Token (PT), agindo de forma análoga a um título de cupom zero.</li>
+            <li><b>Yield Token (YT):</b> Ativo que concede direito integral aos fluxos de rendimento gerados pelo ativo subjacente até o vencimento.</li>
+            <li><b>Mecanismo de Claim e Expiração:</b> Os yields acumulados pelo YT devem ser reivindicados de forma activa via chamadas ao método <code class="math">claimYield()</code>. Caso o resgate não ocorra antes da data de maturidade, todos os fluxos de caixa acumulados não reivindicados são permanentemente **zerados**, cessando os direitos contratuais do detentor.</li>
         </ul>
 
         <h2>3. Filtros Operacionais de Entrada e Limiares por Categoria</h2>
-        <p>Os limiares de liquidez, impactos de preço e spreads mapeados abaixo funcionam como variáveis configuráveis dinâmicas carregadas em tempo de inicialização, permitindo ajustes automáticos ou manuais de sensibilidade sem necessidade de recompilação do core:</p>
+        <p>Variáveis configuráveis dinâmicas carregadas em tempo de inicialização, permitindo ajustes de sensibilidade sem necessidade de alteração do core lógico:</p>
 
         <div class="table-responsive">
             <table>
@@ -268,7 +275,7 @@
                         <th>Tokens Exemplo</th>
                         <th>Fixed APY Mín.</th>
                         <th>TVL Mínimo</th>
-                        <th>Estratégia e Ajuste Dinâmico</th>
+                        <th>Estratégia de Controle</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -277,21 +284,21 @@
                         <td>PT-apxUSD, PT-srUSDe</td>
                         <td><span class="math">&ge; 10%</span></td>
                         <td>$5.000.000 USD</td>
-                        <td>Foco em imunização de taxas. Parâmetro sugerido de Impacto Máx: 0,75%.</td>
+                        <td>Foco em imunização de taxas. Impacto Máx: 0,75%.</td>
                     </tr>
                     <tr>
                         <td><b>LRT / LST (PT)</b></td>
                         <td>PT-eETH, PT-rsETH</td>
                         <td><span class="math">&ge; 8%</span></td>
                         <td>$8.000.000 USD</td>
-                        <td>Foco em acumulação do ativo de lastro. Parâmetro sugerido de Impacto Máx: 1,25%.</td>
+                        <td>Foco em acumulação do ativo de lastro. Impacto Máx: 1,25%.</td>
                     </tr>
                     <tr>
                         <td><b>Cross-Chain</b></td>
-                        <td>Pools Externos</td>
+                        <td>Pools Externos (BNB, etc)</td>
                         <td><span class="math">&ge; 16%</span></td>
                         <td>$10.000.000 USD</td>
-                        <td>Exige prêmio que cubra os custos fixos e flutuantes de pontes de liquidez.</td>
+                        <td>Exige prêmio que cubra custos fixos/flutuantes de pontes de liquidez.</td>
                     </tr>
                     <tr>
                         <td><b>Yield Tokens (YT)</b></td>
@@ -305,17 +312,17 @@
         </div>
 
         <h2>4. Lógica de Decisão e Consistência Dimensional de Custos</h2>
-        <p>Para assegurar que o motor de decisão não autorize ordens ineficientes cujas margens financeiras sejam absorvidas pelas taxas de infraestrutura e swaps, todas as fricções operacionais, taxas e spreads nominais são convertidos matematicamente para a métrica de <b>Custos Totais Equivalentes Anuais (CTEA)</b>, garantindo conformidade com a base temporal anualizada dos indicadores de APY:</p>
+        <p>Para assegurar que o motor de decisão não autorize ordens ineficientes cujas margens financeiras sejam absorvidas pelas taxas, todas as fricções operacionais são convertidas matematicamente para a métrica de <b>Custos Totais Equivalentes Anuais (CTEA)</b>:</p>
 
         <h3>4.1. Equações Operacionais e de Custos Expandidas</h3>
         <ol>
             <li><b>Delta de Yield Bruto (<span class="math">&Delta;<sub>Yield</sub></span>):</b>
                 <div style="text-align:center; margin: 5px 0;"><span class="math">&Delta;<sub>Yield</sub> = Underlying APY<sub>7d</sub> &minus; Implied APY</span></div>
             </li>
-            <li><b>Delta Ajustado ao Tempo (<span class="math">&Delta;<sub>Time</sub></span>):</b> Representa o retorno ajustado até a expiração, onde <span class="math">t<sub>maturidade</sub> = DaysToMaturity / 365</span>.
+            <li><b>Delta Ajustado ao Tempo (<span class="math">&Delta;<sub>Time</sub></span>):</b> Onde <span class="math">t<sub>maturidade</sub> = DaysToMaturity / 365</span>.
                 <div style="text-align:center; margin: 5px 0;"><span class="math">&Delta;<sub>Time</sub> = &Delta;<sub>Yield</sub> &times; t<sub>maturidade</sub></span></div>
             </li>
-            <li><b>Custos Totais Equivalentes Anuais (CTEA):</b> Integra custos de gas, taxas fixas de pontes de dados/liquidez inter-redes (cross-chain) e slippage de entrada/saída simulados na mesma dimensão de taxa:
+            <li><b>Custos Totais Equivalentes Anuais (CTEA) Incorporando Custos Cross-Chain:</b>
                 <div style="text-align:center; margin: 5px 0;"><span class="math">CTEA = (Gas<sub>%</sub> + Bridge<sub>%</sub> + Slippage<sub>In</sub> + Slippage<sub>Out</sub>) / t<sub>maturidade</sub></span></div>
             </li>
             <li><b>Delta Líquido Operacional Final (<span class="math">&Delta;<sub>Net</sub></span>):</b>
@@ -323,101 +330,187 @@
             </li>
         </ol>
 
-        <h3>4.2. Filtro Rígido de Direcionamento e Zona de Inércia (Hold / No-Op)</h3>
+        <h3>4.2. Filtro Rígido de Direcionamento e Zona de Inércia Dinâmica (Hold / No-Op)</h3>
         <ul>
-            <li><b>Gatilho de Entrada em YT:</b> Executado se <span class="math">&Delta;<sub>Net</sub> &gt; &Delta;<sub>target_entry_yt</sub></span>.</li>
-            <li><b>Gatilho de Entrada em PT:</b> Executado se <span class="math">&Delta;<sub>Net</sub> &lt; &minus;&Delta;<sub>target_entry_pt</sub></span>.</li>
-            <li><b>Zona de Inércia Absoluta (Hold / No-Op):</b> Ocorre quando <span class="math">|&Delta;<sub>Net</sub>| &le; &Delta;<sub>target</sub></span>. Se o diferencial líquido obtido situar-se dentro deste intervalo de tolerância (ou se a margem de ganho estimada for excessivamente estreita), o agente **bloqueia sumariamente qualquer movimentação de trading**. Isso previne a degradação patrimonial por overtrading (<i>churning</i>).</li>
+            <li><b>Gatilho de Entrada em YT:</b> Executado se <span class="math">&Delta;<sub>Net</sub> &gt; &Delta;<sub>target_effective</sub></span>.</li>
+            <li><b>Gatilho de Entrada em PT:</b> Executado se <span class="math">&Delta;<sub>Net</sub> &lt; &minus;&Delta;<sub>target_effective</sub></span>.</li>
+            <li><b>Zona de Inércia Absoluta (Hold / No-Op):</b> Ocorre quando <span class="math">|&Delta;<sub>Net</sub>| &le; &Delta;<sub>target_effective</sub></span>. O agente bloqueia qualquer movimentação de trading para prevenir a degradação patrimonial por overtrading (<i>churning</i>).</li>
         </ul>
 
-        <div class="callout">
+        <div class="callout-warn">
             <div class="callout-title">4.3. Filtro de Salvaguarda Temporal: Taxa de Decaimento Alfa do YT (YT Decay Gate)</div>
-            <p>Em carteiras com <span class="math">DaysToMaturity &lt; 30</span>, o YT exibe um comportamento de decaimento temporal acelerado (análogo ao <i>Theta decay</i> de opções). O agente deve calcular o período de ponto de equilíbrio em dias (<span class="math">Breakeven<sub>Days</sub></span>):</p>
+            <p>Em carteiras com <span class="math">DaysToMaturity &lt; 30</span>, o YT exibe decaimento temporal acelerado. O agente calcula o período de ponto de equilíbrio em dias (<span class="math">Breakeven<sub>Days</sub></span>):</p>
             <div style="text-align:center; margin: 8px 0;"><span class="math">Breakeven<sub>Days</sub> = Preço_YT / Underlying_APY<sub>diário</sub></span></div>
-            <p>Se <span class="math">Breakeven<sub>Days</sub> &gt; DaysToMaturity</span>, a operação de entrada em YT é **vetada e cancelada imediatamente**, visto que o ativo derreterá por ação do tempo mais rápido do que a sua capacidade física e matemática de acumular yield.</p>
+            <p>Se <span class="math">Breakeven<sub>Days</sub> &gt; DaysToMaturity</span>, a operação de entrada em YT é **vetada e cancelada imediatamente**, prevenindo a perda total do prêmio pago por ação do decaimento temporal.</p>
         </div>
 
-        <h2>5. Filtros de Risco e Restrições de Janela Curta</h2>
-        <ul>
-            <li><b>Risco do Ativo de Lastro:</b> Mapeamento em tempo real de vulnerabilidades lógicas nos contratos, desvios nos oráculos e quebras de paridade (de-peg). Qualquer sinal de estresse estrutural impede a abertura de novas posições.</li>
-            <li><b>Risco de Liquidez e Profundidade:</b> Avaliação via chamadas estáticas do spread real bid-ask e impacto de preço instantâneo. Caso a simulação exceda o teto dinâmico parametrizado para a respectiva categoria, a transação é descartada.</li>
-        </ul>
-        <p><b>Protocolo para Janelas Inferiores a 14 Dias:</b> Alocações inéditas em pools cuja maturidade seja menor que 14 dias (<span class="math">DaysToMaturity &lt; 14</span>) são suspensas por padrão. O bypass deste bloqueio é condicionado a operações estritamente não especulativas que apresentem ganho líquido comprovado pós-custos, limitadas a: (i) Arbitragem de deságio matemático do PT com resgate garantido na maturidade; (ii) Rotação de caixa defensiva alocada em PT; ou (iii) Liquidação emergencial e preventiva disparada por risco do subjacente.</p>
+        <div class="callout-warn">
+            <div class="callout-title">4.4. Pool Decay Score (PDS) para Proteção de Saída de PT</div>
+            <p>Próximo ao vencimento, a liquidez de resgate dos pools Pendle contrai abruptamente. O <b>Pool Decay Score (PDS)</b> é um coeficiente de 0 a 1 que penaliza o APY do PT conforme a maturidade se aproxima:</p>
+            <div style="text-align:center; margin: 8px 0;"><span class="math">PDS = (\min(DaysToMaturity, Threshold_{max}) / Threshold_{max}) &times; (1 &minus; Volatilidade\_Ajustada)</span></div>
+            <p>Onde <code class="math">fixed_apy_effective = fixed_apy &times; PDS</code>. Se <span class="math">DaysToMaturity &lt; 7</span>, novas entradas em PT são estritamente proibidas (<code class="math">POOL_EXPIRING_SOON</code>).</p>
+        </div>
 
-        <h2>6. Execução e Segurança Computacional</h2>
-        <ul>
-            <li><b>Abstração da Camada de Transporte RPC:</b> Os endpoints de rede e comunicação são isolados da lógica matemática central do agente através de uma camada abstrata. O sistema opera obrigatoriamente utilizando túneis e rotas protegidas contra MEV (Private RPCs, Flashbots Builders) como transporte padrão para neutralizar o risco de ataques de sanduíche e monitoramento de mempool público.</li>
-            <li><b>Cálculo Rígido de minOut:</b> O argumento de retorno mínimo esperado é estipulado na fase de Pré-Validação e transmitido de maneira explícita como parâmetro imutável de input na assinatura dos métodos dos contratos.</li>
-            <li><b>Protocolo Anti-Erro de Execução (Slippage Gate Real-Time):</b> No milissegundo anterior ao disparo da transação assinada, o robô faz uma última simulação estática local em bloco (<code class="math">quote_simulada</code>). Se a cotação instantânea capturada na rede (<code class="math">quote_executada</code>) apresentar desvio em relação à simulação acima de uma tolerância estrita (ex: <span class="math">&gt; 0,1%</span>), indicando flutuação brusca na mempool ou latência de propagação do nó, a execução é **abortada sob salvaguarda**, retornando o robô para o estado de Observação.</li>
-        </ul>
+        <h2>5. Ajustes e Métricas Dinâmicas de Gestão de Portfólio</h2>
+        
+        <h3>5.1. Yield Volatility Index (YVI)</h3>
+        <p>Mede o desvio padrão do <span class="math">&Delta;<sub>Net</sub></span> nas últimas 24 horas para adaptar dinamicamente o tamanho da zona de inércia:</p>
+        <pre>def calculate_dynamic_target():
+    base_target = 0.005  # 0.5% base
+    yvi = calculate_yvi(historical_delta_net)
+    if yvi > 0.03:
+        return base_target * 2.5  # Alarga a zona em alta volatilidade
+    elif yvi < 0.01:
+        return base_target * 0.7  # Estreita a zona em mercado estável
+    return base_target</pre>
 
-        <h2>7. Máquina de Estados e Resiliência Operacional (Fail-Safe)</h2>
-        <p>O fluxo comportamental do agente é gerido por uma máquina de estados finitos determinística com tratamento de erros integrado:</p>
+        <h3>5.2. Capital Efficiency Score (CES) e Alocação Convexa</h3>
+        <p>Para otimizar a distribuição de capital entre pools concorrentes, o robô calcula o CES scoring:</p>
+        <div style="text-align:center; margin: 10px 0;"><span class="math">CES = (APY &times; (TVL\_USD / 1000000)) / ((Risk\_Score + 0.001) &times; (1 + Slippage\_Impact))</span></div>
+        <p>A alocação percentual máxima de capital em um único pool é limitada por um teto rígido de conformidade fixado em **70%** (<code class="math">allocation_pct = min(calculated_ces_pct, 0.70)</code>) para evitar risco idiossincrático de cauda de emissores.</p>
+
+        <h2>6. Engenharia Preditiva: Market Regime Predictor</h2>
+        <p>O sistema incorpora o módulo de aprendizado de máquina <code class="math">PendleMarketRegimePredictor</code>, projetado para atingir <b>70%+ de acurácia</b> na classificação do regime macro do protocolo para horizontes de 7 dias, servindo como o gate direcionador da Máquina de Estados.</p>
+
+        <h3>6.1. Pipeline de Execução e Código de Produção do Modelo</h3>
+        <pre># market_regime_predictor.py
+import numpy as np
+import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
+from typing import Dict
+
+class PendleMarketRegimePredictor:
+    def __init__(self, n_regimes: int = 3, lookback_days: int = 30):
+        self.n_regimes = n_regimes
+        self.lookback = lookback_days
+        self.kmeans = KMeans(n_clusters=n_regimes, random_state=42)
+        self.classifier = RandomForestClassifier(
+            n_estimators=200, max_depth=10, min_samples_split=5, random_state=42
+        )
+        self.scaler = StandardScaler()
+        self.regime_labels = {0: "HIGH_YIELD", 1: "STABLE", 2: "LOW_YIELD"}
+
+    def _extract_regime_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        features = pd.DataFrame(index=df.index)
+        for window in [7, 14, 30]:
+            features[f'apy_ma_{window}d'] = df['underlying_apy'].rolling(window).mean()
+            features[f'apy_std_{window}d'] = df['underlying_apy'].rolling(window).std()
+            features[f'tvl_ma_{window}d'] = df['tvl_usd'].rolling(window).mean()
+        for period in [3, 7]:
+            features[f'apy_momentum_{period}d'] = df['underlying_apy'].pct_change(period)
+            features[f'spread_momentum_{period}d'] = (df['underlying_apy'] - df['implied_apy']).pct_change(period)
+        
+        features['apy_spread'] = df['underlying_apy'] - df['implied_apy']
+        features['spread_ma_7d'] = features['apy_spread'].rolling(7).mean()
+        features['spread_zscore'] = (features['apy_spread'] - features['apy_spread'].rolling(30).mean()) / features['apy_spread'].rolling(30).std()
+        features['implied_lag'] = df['implied_apy'].shift(1) - df['implied_apy']
+        features['convergence_rate'] = -features['implied_lag'] / (features['apy_spread'] + 0.001)
+        features['tvl_growth_7d'] = df['tvl_usd'].pct_change(7)
+        features['tvl_volatility'] = df['tvl_usd'].rolling(14).std() / df['tvl_usd'].rolling(14).mean()
+        features['days_to_maturity'] = df['days_to_maturity']
+        features['maturity_proximity'] = 1 / (features['days_to_maturity'] + 1)
+        return features.dropna()
+
+    def _label_regimes(self, df: pd.DataFrame, features: pd.DataFrame) -> pd.Series:
+        clustering_features = features[['apy_ma_14d', 'apy_std_14d', 'spread_ma_7d', 'tvl_growth_7d', 'convergence_rate']]
+        scaled = self.scaler.fit_transform(clustering_features)
+        regimes = self.kmeans.fit_predict(scaled)
+        regime_means = [features.loc[regimes == r, 'apy_ma_14d'].mean() for r in range(self.n_regimes)]
+        order = np.argsort(regime_means)[::-1]
+        regime_mapping = {old: new for new, old in enumerate(order)}
+        return pd.Series(np.array([regime_mapping[r] for r in regimes]), index=features.index)
+
+    def fit(self, historical_data: pd.DataFrame):
+        features = self._extract_regime_features(historical_data)
+        self.regime_labels_historical = self._label_regimes(historical_data, features)
+        X, y = [], []
+        for i in range(len(features) - 7):
+            X.append(features.iloc[i].values)
+            y.append(self.regime_labels_historical.iloc[i + 7])
+        self.classifier.fit(np.array(X), np.array(y))
+        return accuracy_score(np.array(y), self.classifier.predict(np.array(X)))
+
+    def predict_regime(self, recent_data: pd.DataFrame, horizon_days: int = 7) -> Dict:
+        features = self._extract_regime_features(recent_data)
+        if len(features) == 0:
+            return {'predicted_regime': 'UNKNOWN', 'action': 'HOLD'}
+        latest_features = features.iloc[-1:].values
+        regime_id = self.classifier.predict(latest_features)[0]
+        regime_probs = self.classifier.predict_proba(latest_features)[0]
+        confidence = float(np.max(regime_probs))
+        
+        actions = {
+            0: {'type': 'ROTATE_TO_YT', 'multiplier': 1.3},
+            1: {'type': 'MAINTAIN_PT', 'multiplier': 1.0},
+            2: {'type': 'SEEK_OPPORTUNITIES', 'multiplier': 0.7}
+        }
+        return {
+            'predicted_regime': self.regime_labels[regime_id],
+            'confidence': confidence,
+            'regime_probabilities': {"HIGH_YIELD": regime_probs[0], "STABLE": regime_probs[1], "LOW_YIELD": regime_probs[2]},
+            'action': actions[regime_id]
+        }</pre>
+
+        <h2>7. Execução, Segurança e Máquina de Estados</h2>
+        <ul>
+            <li><b>Isolamento RPC MEV-Shielded:</b> Transações enviadas exclusivamente por túneis privados, bypassando o mempool comum para anular vetores de frontrunning.</li>
+            <li><b>Slippage Gate Real-Time:</b> Uma simulação local estática precede o broadcast da transação assinada. Se a taxa de execução oscilar acima de <span class="math">0,1%</span> em comparação com a cotação simulada, a ordem é revogada imediatamente.</li>
+        </ul>
 
         <div class="diagram-container">
             <table class="diagram-table">
                 <tr>
-                    <td><div class="state-box">1. OBSERVAÇÃO<br><small>Varredura de Métricas</small></div></td>
+                    <td><div class="state-box">1. OBSERVAÇÃO<br><small>Filtros PDS + YVI</small></div></td>
                     <td><span class="arrow">&rarr;</span></td>
-                    <td><div class="state-box">2. PRÉ-VALIDAÇÃO<br><small>Cálculo de Custos/Gates</small></div></td>
+                    <td><div class="state-box">2. PREDIÇÃO<br><small>Model Gate (70%)</small></div></td>
                     <td><span class="arrow">&rarr;</span></td>
-                    <td><div class="state-box">3. EXECUÇÃO ATIVA<br><small>Disparo Abstrato RPC</small></div></td>
+                    <td><div class="state-box">3. PRÉ-VALIDAÇÃO<br><small>CES Alocação</small></div></td>
                     <td><span class="arrow">&rarr;</span></td>
-                    <td><div class="state-box alert">4. COOLDOWN<br><small>Bloqueio de Overtrading</small></div></td>
-                </tr>
-                <tr>
-                    <td colspan="4"></td>
-                    <td><span class="arrow">&darr;</span> <small>Reversão / Latência</small></td>
-                    <td colspan="2"></td>
-                </tr>
-                <tr>
-                    <td colspan="4"></td>
-                    <td><div class="state-box failed">5. TRIAGEM DE FALHA<br><small>Protocolo Anti-Erro</small></div></td>
-                    <td colspan="2"><span class="arrow">&rarr;</span> <small>Ajuste Gás / Cooldown x2</small></td>
+                    <td><div class="state-box alert">4. EXECUÇÃO<br><small>MEV Private RPC</small></div></td>
                 </tr>
             </table>
         </div>
 
-        <h3>7.1. Lógica do Estado de Triagem de Falhas</h3>
-        <ul>
-            <li><b>Falha por Gas (Low Fee / Out of Gas):</b> O robô captura as taxas correntes da rede, aplica um prêmio de **20%** (multiplicador 1.20x) sobre o preço base e a taxa de prioridade, despachando uma nova tentativa idêntica de forma imediata (Limite rígido configurado em até 3 tentativas consecutivas).</li>
-            <li><b>Falha por Estouro de Slippage Real na Rede:</b> O robô cancela os hashes remanescentes no mempool, limpa a fila de transações, aborta o ciclo operacional corrente, retorna ao estado de Observação e aplica uma penalidade de tempo multiplicada por 2 no Cooldown padrão, permitindo que a pool recupere o equilíbrio de liquidez.</li>
-        </ul>
-
         <h2>8. Auto-Compounding Econômico de YT</h2>
-        <p>O reinvestimento de rendimentos acumulados por instâncias de YT não ocorre de forma passiva ou linear. Trata-se de um evento condicionado puramente por eficiência macroeconômica. O acionamento da rotina de claim e reinvestimento (<i>roll positions</i>) dar-se-á estritamente sob a conformidade da seguinte inequação matemática:</p>
+        <p>A rotina de resgate e reinvestimento automático das taxas acumuladas via <code class="math">claimYield()</code> obedece estritamente ao critério macroeconômico marginal:</p>
         <div class="math-block">
-            <span class="math">Yield Acumulado (USD) &gt; 15 &times; Custo Estimado do Gás de Claim (USD)</span>
+            <span class="math">Yield\_Acumulado\_USD &gt; 15 &times; Custo\_Estimado\_Gás\_USD</span>
         </div>
-        <p>A transação é revogada se o spread ou o slippage avaliados na rota de swap de conversão do yield coletado para o novo ativo degradar a lucratividade bruta da operação.</p>
 
-        <h2>9. Payload Completo de Auditoria, Telemetria e Pós-Trade (Production Schema)</h2>
-        <p>Cada varredura, transição ou pós-execução consolida um objeto estruturado completo para fins de logs históricos, auditorias de desvios e replay de tomada de decisão:</p>
-
+        <h2>9. Payload Completo de Auditoria, Telemetria e Pós-Trade (Schema V5.2)</h2>
         <pre>{
   "timestamp": 1780481000,
-  "simulation_timestamp": 1780480998,
-  "replay_id": "arb-pendle-v5.1-9a2c3f8b",
+  "replay_id": "arb-pendle-v5.2-production",
   "chain": "arbitrum",
   "market_id": "0x4b32bc71df119833a1e12e31828f7312365c1928",
-  "provider": "drpc_mev_protected_node_01",
-  "quote_source": "pendle_router_v2_vccc",
-  "token_pair": {
-    "underlying": "apxUSD",
-    "pt_address": "0x1234567890abcdef1234567890abcdef12345678",
-    "yt_address": "0x9876543210fedcba9876543210fedcba98765432"
-  },
+  "provider": "drpc_mev_protected_node",
   "metrics": {
     "fixed_apy": 12.45,
     "implied_apy": 9.20,
     "underlying_apy_7d": 14.80,
     "tvl_usd": 6250000.00,
-    "days_to_maturity": 22.15,
-    "yt_time_value_remaining": 0.60,
-    "yt_decay_rate_daily": 0.018,
-    "breakeven_days": 11.40,
-    "price_impact_estimate": 0.12,
-    "max_allowable_slippage_percent": 0.50
+    "days_to_maturity": 22.15
+  },
+  "risk_metrics": {
+    "pool_decay_score": 0.88,
+    "liquidity_risk_premium": 0.12,
+    "effective_apy_risk_adjusted": 10.95
+  },
+  "dynamic_parameters": {
+    "yvi_calculated": 0.018,
+    "effective_target": 0.0075,
+    "market_regime": "HIGH_YIELD"
+  },
+  "predictive_analytics": {
+    "predicted_regime_7d": "HIGH_YIELD",
+    "confidence_score": 0.74,
+    "regime_probabilities": {
+      "HIGH_YIELD": 0.74,
+      "STABLE": 0.21,
+      "LOW_YIELD": 0.05
+    }
   },
   "cost_breakdown": {
     "gas_usd": 0.35,
@@ -426,31 +519,29 @@
     "slippage_exit_bps": 20,
     "ctea_calculated": 1.15
   },
+  "capital_efficiency": {
+    "ces_score": 2.45,
+    "recommended_allocation_pct": 0.55,
+    "rank": 1,
+    "competing_pools": [
+      {"pool": "PT-sUSDe", "ces": 1.92, "allocation": 0.15}
+    ]
+  },
   "auto_compounding": {
     "yt_accrued_usd": 12.45,
     "gas_estimate_usd": 0.22,
-    "threshold_usd": 3.30,
     "should_compound": true,
     "action": "CLAIM_AND_ROLL"
   },
-  "risk_and_automation": {
-    "underlying_risk_score": 1,
-    "market_risk_score": 1,
-    "risk_status": "SAFE"
-  },
   "execution_engine": {
-    "current_state": "PRE_VALIDATION",
+    "current_state": "EXECUÇÃO_ATIVA",
     "delta_net_calculated": 2.15,
-    "entry_reason": "Underlying APY de 7d com premio significante vs Implied APY. CTEA em 1.15% e Breakeven de 11.4 dias inferior aos 22.15 dias de maturidade, validando a entrada em YT.",
-    "exit_reason": "N/A",
-    "action_recommended": "ROTATE_TO_YT",
-    "cooldown_until": 1780495400,
-    "gas_premium_multiplier": 1.20
+    "action_recommended": "ROTATE_TO_YT"
   },
   "post_execution": {
     "simulated_slippage_bps": 15,
-    "executed_slippage_bps": 17,
-    "deviation_bps": 2,
+    "executed_slippage_bps": 16,
+    "deviation_bps": 1,
     "slippage_gate_triggered": false
   }
 }</pre>
