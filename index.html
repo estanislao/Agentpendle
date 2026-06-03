@@ -1,0 +1,413 @@
+
+html_file_content = """<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Especificação Técnica: Agente Inteligente Pendle (V5 - Final Production)</title>
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-dark: #0f172a;
+            --primary-banner: #020617;
+            --accent: #38bdf8;
+            --border: #cbd5e1;
+            --zebra: #f1f5f9;
+            --math-bg: #f1f5f9;
+            --code-bg: #0f172a;
+            --code-text: #f8fafc;
+            --state-alert: #be123c;
+            --state-failed: #d97706;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            background-color: var(--bg-main);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header Banner */
+        .header-banner {
+            background-color: var(--primary-banner);
+            color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            border-bottom: 4px solid var(--primary);
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .header-banner h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-banner .subtitle {
+            font-size: 12px;
+            color: var(--accent);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Typography */
+        h2 {
+            font-size: 18px;
+            color: var(--primary-dark);
+            margin-top: 35px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h3 {
+            font-size: 14px;
+            color: var(--primary);
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+
+        /* Listas */
+        ul, ol {
+            margin-top: 0;
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+
+        /* Tabelas */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+            background-color: var(--bg-card);
+        }
+
+        th, td {
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: var(--primary-dark);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--zebra);
+        }
+
+        /* Blocos Matemáticos */
+        .math-block {
+            text-align: center;
+            margin: 20px 0;
+            padding: 16px;
+            background-color: var(--math-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .math {
+            font-family: "Times New Roman", Times, serif;
+            font-style: italic;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        /* Blocos de Código (JSON) */
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 18px;
+            border-radius: 6px;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            line-height: 1.5;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        /* Diagrama da Máquina de Estados */
+        .diagram-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 25px 0;
+            padding: 10px 0;
+        }
+
+        .diagram-table {
+            width: 100%;
+            border: none;
+            background: transparent;
+        }
+
+        .diagram-table td {
+            border: none;
+            padding: 8px;
+            text-align: center;
+            background-color: transparent;
+            font-size: 12px;
+        }
+
+        .state-box {
+            background-color: var(--primary);
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            min-width: 130px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .state-box.alert {
+            background-color: var(--state-alert);
+        }
+
+        .state-box.failed {
+            background-color: var(--state-failed);
+        }
+
+        .arrow {
+            font-size: 18px;
+            color: var(--text-muted);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-banner">
+            <div class="subtitle">Documento de Engenharia Definitivo — Sistemas DeFi Avançados</div>
+            <h1>Agente Inteligente de Alocação Pendle (V5 - Final Production)</h1>
+        </div>
+
+        <h2>1. Objetivo do Sistema</h2>
+        <p>O objetivo primário deste sistema é monitorar os mercados do protocolo Pendle Finance na rede Arbitrum, avaliar assimetrias quantitativas entre os tokens de rendimento e executar ordens de rebalanceamento automatizadas. O sistema opera sob um framework estrito de preservação de capital e blindagem contra perdas friccionais, mitigando riscos de execução através de simulações em tempo real e isolamento de infraestrutura.</p>
+
+        <h2>2. Modelo de Yield Nativos do Protocolo</h2>
+        <p>O robô rege as suas decisões exclusivamente pelas métricas e regras estruturais nativas dos smart contracts do Pendle:</p>
+        <ul>
+            <li><b>Underlying APY:</b> Média móvel ponderada de 7 dias do rendimento nativo gerado pelo ativo de lastro subjacente (ex: juros de empréstimo ou taxas acumuladas em pools).</li>
+            <li><b>Implied APY:</b> Taxa anualizada do rendimento futuro precificada em tempo real pelo consenso de mercado dentro da AMM do Pendle. Determina a taxa de conversão instantânea dos tokens.</li>
+            <li><b>Fixed APY:</b> Rendimento fixo e garantido travado no instante exato da aquisição de um <b>Principal Token (PT)</b>. Na curva matemática da AMM, o Fixed APY é numericamente equivalente ao Implied APY no momento do swap.</li>
+            <li><b>Yield Token (YT):</b> Token que concede o direito integral ao recebimento dos rendimentos gerados pelo ativo de lastro até a maturidade. O valor de mercado do YT decai de forma contínua até atingir zero no vencimento, momento em que o direito cessa.</li>
+            <li><b>Mecanismo de Claim:</b> Os yields acumulados pelo YT podem ser extraídos de forma ativa através da interface do dashboard ou por chamadas diretas ao método <code class="math">claimYield()</code>. O direito aos fluxos de caixa acumulados e não reivindicados é integralmente zerado na data de maturidade.</li>
+        </ul>
+
+        <h2>3. Filtros Operacionais de Entrada e Limiares por Categoria</h2>
+        <p>Os limiares de liquidez e impacto de preço mapeados abaixo funcionam como variáveis dinâmicas parametrizáveis na inicialização do sistema, permitindo calibrações de sensibilidade de mercado sem alteração do motor central:</p>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Tokens Exemplo</th>
+                        <th>Fixed APY Mín.</th>
+                        <th>TVL Mínimo</th>
+                        <th>Estratégia e Configuração</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Stablecoins (PT)</b></td>
+                        <td>PT-apxUSD, PT-srUSDe</td>
+                        <td><span class="math">&ge; 10%</span></td>
+                        <td>$5.000.000 USD</td>
+                        <td>Foco em trava de taxa estável. Impacto padrão: 0,75%.</td>
+                    </tr>
+                    <tr>
+                        <td><b>LRT / LST (PT)</b></td>
+                        <td>PT-eETH, PT-rsETH</td>
+                        <td><span class="math">&ge; 8%</span></td>
+                        <td>$8.000.000 USD</td>
+                        <td>Foco em acumulação do ativo base. Impacto padrão: 1,25%.</td>
+                    </tr>
+                    <tr>
+                        <td><b>Cross-Chain</b></td>
+                        <td>Pools Externos</td>
+                        <td><span class="math">&ge; 16%</span></td>
+                        <td>$10.000.000 USD</td>
+                        <td>Apenas com prêmio operacional exógeno explícito.</td>
+                    </tr>
+                    <tr>
+                        <td><b>Yield Tokens (YT)</b></td>
+                        <td>Qualquer YT ativo</td>
+                        <td>N/A</td>
+                        <td>$5.000.000 USD</td>
+                        <td>Exige Spread Líquido Mínimo configurável (<span class="math">&Delta;<sub>target</sub></span>).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>4. Lógica de Decisão e Consistência Dimensional de Custos</h2>
+        <p>Para garantir que o robô não execute transações ineficientes onde as taxas consomem as margens, o sistema converte custos de gas, spreads e slippage nominais em uma métrica unificada denominada <b>Custos Totais Equivalentes Anuais (CTEA)</b>, normalizada na mesma dimensão de taxa de tempo dos indicadores de APY:</p>
+
+        <h3>4.1. Equações Operacionais do Motor</h3>
+        <ol>
+            <li><b>Delta de Yield Bruto (<span class="math">&Delta;<sub>Yield</sub></span>):</b>
+                <div style="text-align:center; margin: 5px 0;"><span class="math">&Delta;<sub>Yield</sub> = Underlying APY<sub>7d</sub> &minus; Implied APY</span></div>
+            </li>
+            <li><b>Delta Ajustado ao Tempo (<span class="math">&Delta;<sub>Time</sub></span>):</b> Onde <span class="math">t<sub>maturidade</sub> = DaysToMaturity / 365</span>.
+                <div style="text-align:center; margin: 5px 0;"><span class="math">&Delta;<sub>Time</sub> = &Delta;<sub>Yield</sub> &times; t<sub>maturidade</sub></span></div>
+            </li>
+            <li><b>Custos Totais Equivalentes Anuais (CTEA):</b> Converte fricções pontuais de execução em taxas percentuais anualizadas correspondentes:
+                <div style="text-align:center; margin: 5px 0;"><span class="math">CTEA = (Gas<sub>%</sub> + Slippage<sub>In</sub> + Slippage<sub>Out</sub>) / t<sub>maturidade</sub></span></div>
+            </li>
+            <li><b>Delta Líquido Operacional (<span class="math">&Delta;<sub>Net</sub></span>):</b>
+                <div style="text-align:center; margin: 5px 0;"><span class="math">&Delta;<sub>Net</sub> = &Delta;<sub>Time</sub> &minus; CTEA &minus; RiscoSaída<sub>%</sub></span></div>
+            </li>
+        </ol>
+
+        <h3>4.2. Limiares por Tipo de Operação e Zona de Inércia</h3>
+        <ul>
+            <li><b>Entrada em YT:</b> Ativada estritamente se <span class="math">&Delta;<sub>Net</sub> &gt; &Delta;<sub>target_entry_yt</sub></span>.</li>
+            <li><b>Entrada em PT:</b> Ativada estritamente se <span class="math">&Delta;<sub>Net</sub> &lt; &minus;&Delta;<sub>target_entry_pt</sub></span>.</li>
+            <li><b>Zona de Inércia Extrema (Hold / No-Op):</b> Ocorre quando <span class="math">|&Delta;<sub>Net</sub>| &le; &Delta;<sub>target</sub></span>. Se o diferencial líquido situar-se dentro do intervalo de tolerância, o agente **bloqueia qualquer tipo de transação**, blindando a carteira contra o fenômeno de <i>churning</i> (overtrading inútil).</li>
+        </ul>
+
+        <h2>5. Filtros de Risco e Restrições de Maturidade Curta</h2>
+        <p>O gerenciamento de risco avalia de forma estanque dois blocos paralelos:</p>
+        <ul>
+            <li><b>Risco do Subjacente:</b> Monitoramento contínuo de vulnerabilidades de smart contracts, desvios de paridade (de-peg) e latência de oráculos.</li>
+            <li><b>Risco de Mercado:</b> Mapeamento dinâmico da profundidade do livro e simulações de impacto de preço. Caso o impacto calculado em simulação estática ultrapasse os limites configuráveis da categoria, o fluxo é imediatamente abortado.</li>
+        </ul>
+        <p><b>Restrição de Maturidade Rígida:</b> Alocações em pools com menos de 14 dias para o vencimento (<span class="math">DaysToMaturity &lt; 14</span>) são suspensas por padrão. A quebra deste bloqueio é autorizada exclusivamente se houver ganho líquido claro após custos e se a operação visar fins não especulativos, limitados a: (i) Arbitragem matemática direta por deságio de PT; (ii) Rotação tática defensiva de caixa; ou (iii) Liquidação emergencial por falha de peg do subjacente.</p>
+
+        <h2>6. Execução e Segurança Computacional</h2>
+        <ul>
+            <li><b>Camada Abstrata de Transporte RPC:</b> A infraestrutura de envio de transações é isolada como um módulo agnóstico de rede, permitindo o chaveamento de provedores e o uso de endpoints protegidos contra MEV (Private RPCs / Flashbots Builders) para anular vetores de ataques de sanduíche.</li>
+            <li><b>Invariante `minOut` Dinâmico:</b> Antes do disparo, o robô calcula a quantidade mínima aceitável de tokens de retorno com base no estado de Pré-Validação, injetando o valor diretamente na assinatura da transação.</li>
+            <li><b>Protocolo Anti-Erro (Slippage Gate):</b> O robô executa uma simulação estática em bloco no instante exato do envio (<code class="math">quote_simulada</code>). Caso a cotação recuperada em tempo de execução (<code class="math">quote_executada</code>) divirja acima do limite de tolerância estrito (ex: <span class="math">&gt; 0,1%</span>), a transação é cancelada e o robô retorna ao estado de Observação para reavaliação de contexto.</li>
+        </ul>
+
+        <h2>7. Máquina de Estados e Resiliência a Falhas (Fail-Safe)</h2>
+        <p>O robô opera através de alternâncias rígidas de estados computacionais, implementando um fluxo dedicado de auto-recuperação:</p>
+
+        <div class="diagram-container">
+            <table class="diagram-table">
+                <tr>
+                    <td><div class="state-box">1. OBSERVAÇÃO<br><small>Varredura de Métricas</small></div></td>
+                    <td><span class="arrow">&rarr;</span></td>
+                    <td><div class="state-box">2. PRÉ-VALIDAÇÃO<br><small>Cálculo de Custos/Gate</small></div></td>
+                    <td><span class="arrow">&rarr;</span></td>
+                    <td><div class="state-box">3. EXECUÇÃO ATIVA<br><small>Disparo MEV-Protected</small></div></td>
+                    <td><span class="arrow">&rarr;</span></td>
+                    <td><div class="state-box alert">4. COOLDOWN<br><small>Bloqueio Temporal</small></div></td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td><span class="arrow">&darr;</span> <small>Erro / Reversão</small></td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td><div class="state-box failed">5. TRIAGEM DE FALHA<br><small>Protocolo de Retries</small></div></td>
+                    <td colspan="2"><span class="arrow">&rarr;</span> <small>Ajuste de Gás / Aborto</small></td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>7.1. Regras de Recuperação no Estado de Triagem</h3>
+        <ul>
+            <li><b>Falha por Gas (Low Fee / Gas Reversal):</b> O agente aplica um prêmio multiplicador de <b>20%</b> (1.20x) sobre o preço base e a taxa de prioridade e reenvia a transação imediatamente (Limite fixado em no máximo 3 retries consecutivos).</li>
+            <li><b>Falha por Slippage Estourado:</b> O robô cancela os hashes no mempool, aborta a fila de rotação, retorna para o estado de Observação e aplica uma penalidade temporal estendida no Cooldown para aguardar a estabilização da volatilidade do pool.</li>
+        </ul>
+
+        <h2>8. Auto-Compounding Econômico de YT</h2>
+        <p>O recolhimento do yield acumulado por Yield Tokens (YT) deve ser tratado como um evento estritamente microeconômico, e não uma ação automatizada contínua. O robô invocará a colheita e o reinvestimento automático se, e somente se, a seguinte inequação for plenamente atendida:</p>
+        <div class="math-block">
+            <span class="math">yield_acumulado_usd &gt; 15 &times; custo_estimado_de_gas_usd</span>
+        </div>
+        <p>A operação deve ser sumariamente abortada caso o slippage simulado na rota do swap de reinvestimento degrade a margem de lucro líquido real obtida na colheita.</p>
+
+        <h2>9. Payload Completo de Auditoria e Telemetria (Production Schema)</h2>
+        <pre>{
+  "timestamp": 1780481000,
+  "simulation_timestamp": 1780480998,
+  "replay_id": "arb-pendle-v5-8f3b2c9a",
+  "chain": "arbitrum",
+  "market_id": "0x4b32bc71df119833a1e12e31828f7312365c1928",
+  "provider": "drpc_private_premium",
+  "quote_source": "pendle_router_v2_vccc",
+  "token_pair": {
+    "underlying": "apxUSD",
+    "pt_address": "0x1234567890abcdef1234567890abcdef12345678",
+    "yt_address": "0x9876543210fedcba9876543210fedcba98765432"
+  },
+  "metrics": {
+    "fixed_apy": 12.45,
+    "implied_apy": 9.20,
+    "underlying_apy_7d": 14.80,
+    "tvl_usd": 6250000.00,
+    "days_to_maturity": 14.12,
+    "price_impact_estimate": 0.12,
+    "entry_slippage": 0.15,
+    "exit_slippage": 0.20,
+    "max_allowable_slippage_percent": 0.50
+  },
+  "risk_and_automation": {
+    "underlying_risk_score": 1,
+    "market_risk_score": 1,
+    "risk_status": "SAFE",
+    "yield_compounding_trigger_usd": 50.00
+  },
+  "execution_engine": {
+    "current_state": "PRE_VALIDATION",
+    "delta_net_calculated": 2.15,
+    "entry_reason": "Underlying APY de 7d com premio significativo frente ao Implied APY. CTEA em 1.15%, gerando Delta Liquido acima do threshold minimo de entrada de YT.",
+    "exit_reason": "N/A",
+    "action_recommended": "ROTATE_TO_YT",
+    "cooldown_until": 1780495400,
+    "gas_premium_multiplier": 1.20
+  }
+}</pre>
+    </div>
+
+</body>
+</html>"""
