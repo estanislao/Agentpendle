@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Especificação Técnica: Agente Inteligente Pendle (V5.4 - Production Blueprint)</title>
+    <title>Especificação Técnica: Agente Inteligente Pendle (V5.5 - Final Production Specification)</title>
     <style>
         :root {
             --bg-main: #f4f6fa;
@@ -82,22 +82,22 @@
 
     <div class="container">
         <div class="header-banner">
-            <div class="subtitle">Documento de Especificação Técnica e Engenharia de Software</div>
-            <h1>Agente Inteligente de Alocação Pendle (V5.4 - Production Blueprint)</h1>
+            <div class="subtitle">Documento de Especificação Técnica e Blueprint de Engenharia</div>
+            <h1>Agente Inteligente de Alocação Pendle (V5.5 - Final Production Specification)</h1>
         </div>
 
         <h2>1. Objetivo do Sistema e Modos de Operação</h2>
-        <p>O objetivo primário do sistema é monitorar, predizer e arbitrar de forma autônoma os mercados do protocolo Pendle Finance. O sistema gerencia o rebalanceamento dinâmico entre Yield Tokens (YT) e Principal Tokens (PT) mitigando sistematicamente riscos de cauda e derrapagem (*slippage*).</p>
+        <p>O objetivo primário do sistema é monitorar, predizer e arbitrar de forma autônoma os mercados do protocolo Pendle Finance. O sistema gerencia o rebalanceamento dinâmico entre Yield Tokens (YT) e Principal Tokens (PT) mitigando sistematicamente riscos de cauda, slippage e impermanência de liquidez.</p>
         
         <h3>1.1. Isolamento de Ambiente via Modo Dry-Run</h3>
         <p>O agente possui suporte nativo para isolamento operacional configurado pela flag global <code class="math">EXECUTION_MODE</code>:</p>
         <ul>
             <li><b>LIVE:</b> Assina criptograficamente e transmite transações diretamente para a rede por meio de RPC protegido contra MEV.</li>
-            <li><b>DRY_RUN:</b> Executa todo o pipeline lógico de dados, consome o modelo quantitativo/preditivo, calcula o <code class="math">minOut</code> e monta o payload de telemetria estruturado, porém <b>intercepta e aborta</b> a operação imediatamente antes da assinatura on-chain. Útil para auditorias de risco zero.</li>
+            <li><b>DRY_RUN:</b> O método <code class="math">execute()</code> deve **interromper a rotina obrigatoriamente antes de assinar ou enviar** qualquer transação para a rede. Todas as ações recomendadas geradas na telemetria devem ser sufixadas com <code class="math">*_SIMULATED</code>. O agente pode simular os impactos no estado interno do portfólio para fins de auditoria, sem qualquer interação na carteira real.</li>
         </ul>
 
         <h2>2. Contratos de Implementação (Spec-to-Code Mapping)</h2>
-        <p>Para eliminar ambiguidades na tradução de regras de negócio para código, o sistema obedece estritamente às seguintes interfaces e contratos de software:</p>
+        <p>Para eliminar ambiguidades na tradução de regras de negócio para código, o sistema obedece estritamente às seguintes interfaces de software:</p>
 
         <h3>2.1. Interface do Agente Principal (Core Agent)</h3>
         <pre>class PendleAllocationAgent:
@@ -110,7 +110,7 @@
         pass
 
     def execute(self, decision: ExecutionDecision) -> ExecutionResult:
-        """Simula localmente via MEV-Shielded RPC e transmite se o Slippage Gate passar."""
+        """Simula localmente via MEV-Shielded RPC e transmite se o Slippage Gate passar (ao rodar em LIVE)."""
         pass
 
     def cooldown(self, reason: str, duration: int) -> None:
@@ -139,11 +139,17 @@ def should_enter_pt(delta_net: float, threshold: float, regime_bias: float) -> b
     pass
 
 def should_exit_position(position_state: PositionState, market_snapshot: MarketSnapshot, asset_ctx: AssetContext) -> bool:
-    """Monitora condições de saída prematura por quebra de fundamentos ou risco."""
+    """
+    Monitoramento ativo de saídas prematuras protetivas.
+    Gatilhos obrigatórios de implementação:
+    1. Quebra de Peg / Risco do subjacente (ex: LRT/LST descolando do preço do ETH/Stable).
+    2. Colapso do Implied APY abaixo do piso de segurança histórica determinado para o ativo.
+    3. Deterioração severa de TVL e liquidez interna da AMM da Pendle.
+    """
     pass</pre>
 
         <h2>3. Matriz de Ativos Parametrizável e Perfis de Risco Macro</h2>
-        <p>Nenhum parâmetro operacional é codificado de forma rígida (*hard-coded*). O sistema lê dinamicamente um dicionário de configuração adaptado de acordo com a variável global macro <code class="math">RISK_MODE</code>:</p>
+        <p>Nenhum parâmetro operacional é codificado de forma rígida (<i>hard-coded</i>). O sistema lê dinamicamente um dicionário de configuração adaptado de acordo com a variável global macro <code class="math">RISK_MODE</code>. O multiplicador de ajuste (<code class="math">regime_bias</code>) aplicado nas funções de decisão combina o <code class="math">RISK_MODE</code> ativo ao regime de mercado detectado pelo classificador.</p>
 
         <div class="table-responsive">
             <table>
@@ -151,7 +157,7 @@ def should_exit_position(position_state: PositionState, market_snapshot: MarketS
                     <tr>
                         <th>Perfil de Risco Macro</th>
                         <th><span class="math">&Delta;<sub>target_base</sub></span></th>
-                        <th>Multiplicador k (<span class="math">&sigma;</span>)</th>
+                        <th>Multiplicador k (<span class="math">&sigma;<sub>24h</sub></span>)</th>
                         <th>Teto Máx. Tese YT</th>
                         <th>Slippage Tolerado</th>
                     </tr>
@@ -182,36 +188,39 @@ def should_exit_position(position_state: PositionState, market_snapshot: MarketS
             </table>
         </div>
 
-        <h3>3.1. Limites de Alocação por Tese de Ativo</h3>
-        <p>Os limites abaixo restringem a exposição a teses de mercado para evitar contágios sistêmicos:</p>
+        <h3>3.1. Limites de Alocação por Tese e Pool</h3>
         <ul>
             <li><b>Stablecoins (PT):</b> Máximo de 80% do portfólio global.</li>
-            <li><b>LRT / LST (PT):</b> Máximo de 50% para mitigar riscos de descolamento de derivativos de Staking (*slashing*).</li>
-            <li><b>Limite Unificado por Pool:</b> Independentemente do perfil, o teto rígido de capital exposto a um <b>único pool individual é de 70%</b>.</li>
+            <li><b>LRT / LST (PT):</b> Máximo de 50% para mitigar riscos de descolamento de derivativos de Staking (<i>slashing</i>).</li>
+            <li><b>Limite Unificado por Pool:</b> O teto rígido de capital exposto a um <b>único pool individual é de 70%</b> para evitar riscos idiossincrásicos de emissores.</li>
         </ul>
 
-        <h2>4. Lógica Quantitativa de Decisão</h2>
-        <p>Todas as fricções de taxas, pontes cross-chain e slippages são unificadas dimensionalmente na métrica de <b>Custos Totais Equivalentes Anuais (CTEA)</b> utilizando aritmética de precisão estendida (WAD):</p>
+        <h2>4. Lógica Quantitativa de Decisão e Consistência Dimensional</h2>
+        <p>Para assegurar o alinhamento dimensional, custos pontuais (Gas e Slippage) são anualizados dividindo-os pelo prazo de vencimento do título. Toda a aritmética utiliza precisão estendida (WAD):</p>
         
         <div class="math-block">
-            <span class="math">&Delta;<sub>target_effective</sub> = &Delta;<sub>target_base</sub> + (k &times; &sigma;<sub>&Delta;<sub>Net</sub>, 24h</sub>)</span>
+            <span class="math">CTEA = \frac{CustoGasUSD + SlippageInUSD + SlippageOutUSD}{NotionalUSD} \times \frac{365}{DaysToMaturity}</span>
         </div>
 
-        <ul>
-            <li><b>Sinal de Compra YT:</b> <span class="math">&Delta;<sub>Net</sub> &gt; &Delta;<sub>target_effective</sub> &times; Bias</span></li>
-            <li><b>Sinal de Compra PT:</b> <span class="math">&Delta;<sub>Net</sub> &lt; &minus;&Delta;<sub>target_effective</sub> &times; Bias</span></li>
-            <li><b>Zona de Inércia (No-Op):</b> Ocorre quando o spread não rompe as bandas dinâmicas. O robô bloqueia execuções para evitar queima inflacionária de gás por overtrading.</li>
-        </ul>
+        <div class="math-block">
+            <span class="math">&Delta;<sub>Net</sub> = &Delta;<sub>Time</sub> &minus; CTEA &minus; RiscoSa&iacute;da<sub>anualizado</sub></span>
+        </div>
+
+        <p>A variável <span class="math">&sigma;<sub>24h</sub></span> é explicitamente definida como o <b>desvio padrão amostral dos valores de <span class="math">&Delta;<sub>Net</sub></span> calculados a cada hora nas últimas 24 horas</b> (Yield Volatility Index - YVI). Ele baliza o limiar dinâmico:</p>
+
+        <div class="math-block">
+            <span class="math">&Delta;<sub>target_effective</sub> = &Delta;<sub>target_base</sub> + (k &times; &sigma;<sub>24h</sub>)</span>
+        </div>
 
         <div class="callout-warn">
             <div class="callout-title">4.1. Alinhamento Dimensional do Breakeven (YT Decay Gate)</div>
-            <p>Para evitar a perda total do prêmio pago por Yield Tokens próximos ao vencimento, o agente calcula o ponto de equilíbrio de dias baseado no retorno diário real sobre o principal:</p>
+            <p>Para evitar a perda total do prêmio pago por Yield Tokens próximos ao vencimento, o agente calcula o ponto de equilíbrio baseado na taxa diária real do ativo de lastro:</p>
             <div style="text-align:center; margin: 8px 0;"><span class="math">Breakeven<sub>Days</sub> = Preço\_YT / (Underlying\_APY<sub>7d</sub> / 365)</span></div>
             <p>Se <span class="math">Breakeven<sub>Days</sub> &gt; DaysToMaturity</span>, a operação é **vetada e abortada**, emitindo a flag de erro <code class="math">BREAKEVEN_VIOLATION</code>.</p>
         </div>
 
         <h2>5. Cenários de Teste Obrigatórios (Test Cases Conceituais)</h2>
-        <p>A suite de testes automatizados do sistema deve validar obrigatoriamente os seguintes comportamentos determinísticos:</p>
+        <p>A suite de testes automatizados do sistema (CI/CD) deve validar obrigatoriamente os seguintes comportamentos. **A suíte de testes deve incluir pelo menos um cenário em cada RISK_MODE para os Casos A e B**, assegurando que a alteração de perfil de risco modifique de forma correta o limiar efetivo (<span class="math">&Delta;<sub>target_effective</sub> &times; regime\_bias</span>).</p>
         
         <div class="table-responsive">
             <table>
@@ -254,58 +263,82 @@ def should_exit_position(position_state: PositionState, market_snapshot: MarketS
                         <td>Ativa travamento de escrita; bloqueia novas assinaturas criptográficas.</td>
                         <td><code class="math">CRITICAL_HALT</code></td>
                     </tr>
+                    <tr>
+                        <td><b>F: Fallback da IA</b></td>
+                        <td>Confiança do classificador preditivo abaixo de 65% (<code class="math">confidence &lt; 0.65</code>).</td>
+                        <td>Ignora o viés do preditor; opera puramente com as equações matemáticas neutras.</td>
+                        <td><code class="math">FALLBACK_DETERMINISTIC_ACTIVE</code></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
 
-        <h2>6. Camada Inteligente, Fallback e Salvaguardas</h2>
-        <p>O classificador baseado em Inteligência Artificial atua estritamente como um modificador de viés das equações matemáticas. Caso a confiança retornada pelo modelo seja inferior ao limiar rígido de <b>65%</b> (<code class="math">PREDICTOR_CONFIDENCE_THRESHOLD = 0.65</code>), o motor ativa o <b>Fallback Determinístico</b>, ignorando as recomendações do classificador.</p>
+        <h2>6. Camada Inteligente e Fallback Preditivo</h2>
+        <p>O classificador baseado em Inteligência Artificial atua estritamente como um modificador de viés das equações matemáticas. Caso a confiança retornada pelo modelo seja inferior ao limiar rígido de <b>65%</b> (<code class="math">PREDICTOR_CONFIDENCE_THRESHOLD = 0.65</code>), o motor ativa o <b>Fallback Determinístico</b>, ignorando as recomendações do classificador e forçando o <code class="math">regime_bias = 1.0</code> para blindar o capital de incertezas estatísticas.</p>
 
-        <h2>7. Infraestrutura, Matriz de Cooldown e Protocolo de Autocura</h2>
-        <p>Erros operacionais disparam tempos de descanso específicos (<code class="math">SLIPPAGE_VIOLATION: 45s</code>, <code class="math">RPC_NODE_TIMEOUT: 180s</code>). O estouro de falhas joga o sistema no estado crítico.</p>
+        <h2>7. Infraestrutura, Matriz de Cooldown e Protocolo de Saída</h2>
+        <p>Erros operacionais disparam tempos de descanso específicos de acordo com a gravidade da falha detectada.</p>
         
         <h3>7.1. Protocolo de Saída de CRITICAL_HALT</h3>
-        <p>Uma vez em travamento, o robô interrompe assinaturas e envios de transação on-chain, mas <b>continua executando as rotinas de Observação e Pré-validação de forma passiva</b> para telemetria. A liberação do travamento se dá exclusivamente por:</p>
-        <ol>
-            <li><b>Intervenção Manual Autenticada:</b> Assinatura criptográfica do operador ou comando via painel de administração seguro.</li>
-            <li><b>Autocura Automatizada Cumulativa:</b> Restauração autônoma autorizada apenas se o agente registrar: janela mínima de 4 horas em halt transcorrida, zeragem do contador horário de falhas e sucesso nos testes de integridade do nó RPC por 30 blocos seguidos.</li>
-        </ol>
+        <p>Uma vez em travamento, o robô interrompe assinaturas e envios de transação on-chain, mas mantêm em background as rotinas de Observação e Pré-validação de forma passiva para fins de telemetria. **Não há saída automática de CRITICAL_HALT via cron ou scripts simples; o destravamento exige confirmação explícita de um operador autorizado** por meio de injeção manual autenticada ou alteração assistida de configuração no painel operacional.</p>
 
-        <h2>8. Telemetria, Retenção de Séries Temporais e Reprodutibilidade</h2>
-        <p>Todos os payloads emitidos são estruturados em JSON e devem ser persistidos em um banco de dados de séries temporais (ex: ClickHouse, TimescaleDB) com <b>retenção mínima de 12 a 24 meses</b> para fins de auditoria regulatória e tuning de modelos. O identificador único <code class="math">replay_id</code> permite a reconstituição precisa de todo o contexto operacional e parâmetros de mercado do bloco correspondente.</p>
+        <h2>8. Governança de Telemetria, Retenção e Reprodutibilidade</h2>
+        <p>Todos os payloads emitidos são estruturados em JSON e devem ser persistidos em um banco de dados de séries temporais (ex: ClickHouse, TimescaleDB) com <b>retenção mínima de 12 a 24 meses</b> para fins de auditoria regulatória e tuning de modelos.</p>
+        
+        <p class="callout" style="border-left-color: var(--primary); background-color: var(--zebra);">
+            <b>Garantia de Atomicidade de Telemetria:</b> Qualquer decisão do motor que resulte em uma interação on-chain (em modo LIVE) deve ter seu **payload JSON completo gravado no datastore de logs de forma precedente à submissão da transação**. Isso assegura que, mesmo em cenários de crash do nó ou falhas de rede durante o broadcast, o identificador <code class="math">replay_id</code> conterá o contexto exato e imutável que motivou a decisão.
+        </p>
 
-        <h2>9. Payload Atualizado de Telemetria (Schema V5.4)</h2>
+        <h2>9. Payload Atualizado de Telemetria (Schema V5.5)</h2>
         <pre>{
   "timestamp": 1780481000,
-  "replay_id": "arb-pendle-v5.4.0-production",
+  "replay_id": "arb-pendle-v5.5.0-production",
   "execution_mode": "DRY_RUN",
   "risk_profile": "CONSERVATIVE",
   "strategy_intent": {
-    "regime_label": "HIGH_YIELD",
-    "model_confidence": 0.74,
-    "fallback_active": false,
-    "entry_reason": "SPREAD_NET_EXCEEDS_DYNAMIC_TARGET_BULLISH_BIAS",
-    "exit_reason": "NONE",
-    "validation_gate_logs": "YT_DECAY_GATE_PASSED__BREAKEVEN_OK"
+    "regime_label": "LOW_YIELD",
+    "model_confidence": 0.52,
+    "fallback_active": true,
+    "entry_reason": "MATHEMATICAL_CORE_ONLY_BYPASSED_UNCERTAIN_AI",
+    "validation_gate_logs": "FALLBACK_DETERMINISTIC_ACTIVE"
   },
   "metrics": {
-    "fixed_apy": 12.45,
-    "implied_apy": 9.20,
-    "underlying_apy_7d": 14.80,
-    "tvl_usd": 6250000.00,
-    "days_to_maturity": 22.15
+    "fixed_apy": 10.15,
+    "implied_apy": 8.10,
+    "underlying_apy_7d": 12.40,
+    "tvl_usd": 7100000.00,
+    "days_to_maturity": 45.00,
+    "yvi_volatility_24h": 0.0125
+  },
+  "cost_breakdown": {
+    "gas_usd": 0.42,
+    "slippage_entry_usd": 12.50,
+    "slippage_exit_usd": 15.00,
+    "notional_usd": 10000.00,
+    "ctea_calculated_anualized": 1.08
+  },
+  "capital_efficiency": {
+    "ces_score": 1.85,
+    "recommended_allocation_pct": 0.35,
+    "competing_pools": [
+      {
+        "pool_id": "0xpt_susde_execution",
+        "ces_score": 1.42,
+        "allocation_pct": 0.10
+      }
+    ]
   },
   "execution_engine": {
-    "current_state": "OBSERVING_PASSIVE",
-    "delta_net_calculated": 2.15,
-    "delta_target_effective": 0.0095,
-    "action_recommended": "ROTATE_TO_YT_SIMULATED",
-    "min_out_calculated": 0.9945
+    "current_state": "OBSERVING_PASSIVE_SIMULATED",
+    "delta_net_calculated": 0.85,
+    "delta_target_effective": 0.0105,
+    "action_recommended": "ROTATE_TO_PT_SIMULATED",
+    "min_out_calculated": 0.9985
   },
   "infrastructure_health": {
     "hourly_failure_count": 0,
-    "current_state_machinery": "HALT_RECOVERY_PENDING",
-    "active_cooldown_reason": "PREVIOUS_RPC_TIMEOUT_AUTO_RESOLVING"
+    "current_state_machinery": "CRITICAL_HALT_MANUAL_RESET_REQUIRED",
+    "active_cooldown_reason": "HALT_ACTIVE_NO_AUTO_RECOVERY_ALLOWED"
   }
 }</pre>
     </div>
