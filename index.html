@@ -6,895 +6,408 @@
 <title>Agente Pendle V5.5.1 — PT Only | DollarUp</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap');
-
   :root {
-    --bg:        #0a0e14;
-    --surface:   #0f1520;
-    --surface2:  #151e2d;
-    --border:    #1e2d42;
-    --accent:    #00d4aa;
-    --accent2:   #3b82f6;
-    --accent3:   #f59e0b;
-    --danger:    #ef4444;
-    --text:      #e2e8f0;
-    --muted:     #64748b;
-    --mono:      'JetBrains Mono', monospace;
-    --sans:      'Syne', sans-serif;
+    --bg:#0a0e14;--surface:#0f1520;--surface2:#151e2d;--border:#1e2d42;
+    --accent:#00d4aa;--accent2:#3b82f6;--accent3:#f59e0b;--danger:#ef4444;
+    --text:#e2e8f0;--muted:#64748b;
+    --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 14px;
-    line-height: 1.7;
-    min-height: 100vh;
-  }
-
-  /* ── Grid background ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,212,170,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,170,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .wrapper {
-    position: relative;
-    z-index: 1;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 60px 24px 120px;
-  }
-
-  /* ── Header ── */
-  .header {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 40px;
-    margin-bottom: 60px;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(0,212,170,0.08);
-    border: 1px solid rgba(0,212,170,0.25);
-    color: var(--accent);
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    border-radius: 4px;
-    margin-bottom: 24px;
-  }
-
-  .badge::before {
-    content: '';
-    width: 6px; height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-  }
-
-  h1 {
-    font-family: var(--sans);
-    font-size: clamp(28px, 5vw, 48px);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 16px;
-    background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, var(--accent2) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .subtitle {
-    color: var(--muted);
-    font-size: 13px;
-    letter-spacing: 0.05em;
-  }
-
-  .meta-row {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
-    margin-top: 24px;
-  }
-
-  .meta-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  .meta-item span {
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  /* ── Sections ── */
-  .section {
-    margin-bottom: 48px;
-  }
-
-  .section-label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .section-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--accent);
-    background: rgba(0,212,170,0.08);
-    border: 1px solid rgba(0,212,170,0.2);
-    padding: 3px 8px;
-    border-radius: 3px;
-    letter-spacing: 0.05em;
-  }
-
-  h2 {
-    font-family: var(--sans);
-    font-size: 18px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: -0.01em;
-  }
-
-  h3 {
-    font-family: var(--sans);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--accent2);
-    margin-bottom: 12px;
-    margin-top: 20px;
-    letter-spacing: 0.02em;
-  }
-
-  p {
-    color: #94a3b8;
-    margin-bottom: 12px;
-    line-height: 1.8;
-  }
-
-  /* ── Cards ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    margin-bottom: 16px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    right: 0; height: 2px;
-    background: linear-gradient(90deg, var(--accent), transparent);
-  }
-
-  .card.accent2::before { background: linear-gradient(90deg, var(--accent2), transparent); }
-  .card.accent3::before { background: linear-gradient(90deg, var(--accent3), transparent); }
-  .card.danger::before  { background: linear-gradient(90deg, var(--danger), transparent); }
-
-  /* ── Tables ── */
-  .table-wrap {
-    overflow-x: auto;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 16px;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-
-  th {
-    background: var(--surface2);
-    color: var(--muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 10px;
-    padding: 10px 16px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-
-  td {
-    padding: 10px 16px;
-    border-bottom: 1px solid rgba(30,45,66,0.5);
-    color: #94a3b8;
-    vertical-align: top;
-  }
-
-  tr:last-child td { border-bottom: none; }
-
-  td:first-child { color: var(--text); font-weight: 500; }
-
-  td code {
-    background: rgba(0,212,170,0.08);
-    color: var(--accent);
-    padding: 1px 6px;
-    border-radius: 3px;
-    font-size: 11px;
-  }
-
-  /* ── Code blocks ── */
-  pre {
-    background: #060a10;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 20px;
-    overflow-x: auto;
-    margin-bottom: 16px;
-    position: relative;
-  }
-
-  pre code {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: #a8b4c8;
-    line-height: 1.8;
-  }
-
-  .code-label {
-    position: absolute;
-    top: 10px; right: 14px;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  /* ── Syntax ── */
-  .kw  { color: #c792ea; }
-  .fn  { color: #82aaff; }
-  .str { color: #c3e88d; }
-  .num { color: #f78c6c; }
-  .cm  { color: #546e7a; font-style: italic; }
-  .acc { color: var(--accent); font-weight: 600; }
-  .acc2{ color: var(--accent2); }
-  .acc3{ color: var(--accent3); }
-
-  /* ── Formula ── */
-  .formula {
-    background: rgba(0,212,170,0.04);
-    border: 1px solid rgba(0,212,170,0.15);
-    border-left: 3px solid var(--accent);
-    border-radius: 4px;
-    padding: 16px 20px;
-    margin: 16px 0;
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--accent);
-    letter-spacing: 0.02em;
-  }
-
-  /* ── Pills ── */
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    margin: 2px;
-  }
-
-  .pill-green  { background: rgba(0,212,170,0.12); color: var(--accent); border: 1px solid rgba(0,212,170,0.25); }
-  .pill-blue   { background: rgba(59,130,246,0.12); color: var(--accent2); border: 1px solid rgba(59,130,246,0.25); }
-  .pill-yellow { background: rgba(245,158,11,0.12); color: var(--accent3); border: 1px solid rgba(245,158,11,0.25); }
-  .pill-red    { background: rgba(239,68,68,0.12); color: var(--danger); border: 1px solid rgba(239,68,68,0.25); }
-
-  /* ── Architecture ── */
-  .arch {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 28px;
-    font-family: var(--mono);
-    font-size: 12px;
-    line-height: 2;
-  }
-
-  .arch-root { color: var(--accent); font-weight: 700; font-size: 14px; }
-  .arch-child { color: #94a3b8; padding-left: 20px; }
-  .arch-child::before { content: '├── '; color: var(--border); }
-  .arch-child:last-child::before { content: '└── '; color: var(--border); }
-  .arch-file { color: var(--accent2); font-weight: 500; }
-  .arch-desc { color: var(--muted); }
-  .arch-sub { padding-left: 52px; }
-  .arch-sub::before { content: '├── '; color: var(--border); }
-  .arch-sub:last-child::before { content: '└── '; color: var(--border); }
-
-  /* ── Warning box ── */
-  .warning {
-    background: rgba(239,68,68,0.06);
-    border: 1px solid rgba(239,68,68,0.2);
-    border-left: 3px solid var(--danger);
-    border-radius: 4px;
-    padding: 14px 18px;
-    margin: 16px 0;
-    font-size: 12px;
-    color: #fca5a5;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-  }
-
-  .warning::before { content: '⚠'; flex-shrink: 0; }
-
-  /* ── Info box ── */
-  .info {
-    background: rgba(59,130,246,0.06);
-    border: 1px solid rgba(59,130,246,0.2);
-    border-left: 3px solid var(--accent2);
-    border-radius: 4px;
-    padding: 14px 18px;
-    margin: 16px 0;
-    font-size: 12px;
-    color: #93c5fd;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-  }
-
-  .info::before { content: 'ℹ'; flex-shrink: 0; }
-
-  /* ── Status grid ── */
-  .status-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .status-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px;
-  }
-
-  .status-card-label {
-    font-size: 10px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-  }
-
-  .status-card-value {
-    font-family: var(--sans);
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--accent);
-  }
-
-  .status-card-sub {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-
-  /* ── Footer ── */
-  .footer {
-    border-top: 1px solid var(--border);
-    padding-top: 32px;
-    margin-top: 80px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .footer-brand {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 16px;
-    background: linear-gradient(135deg, #fff, var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .footer-meta {
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
-
-  ul { list-style: none; padding: 0; }
-  ul li {
-    padding: 4px 0;
-    padding-left: 16px;
-    color: #94a3b8;
-    position: relative;
-    font-size: 13px;
-  }
-  ul li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-size: 11px;
-  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:14px;line-height:1.7;min-height:100vh}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+  .wrapper{position:relative;z-index:1;max-width:1020px;margin:0 auto;padding:60px 24px 120px}
+  .header{border-bottom:1px solid var(--border);padding-bottom:40px;margin-bottom:60px}
+  .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);color:var(--accent);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:6px 14px;border-radius:4px;margin-bottom:24px}
+  .badge::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+  h1{font-family:var(--sans);font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:16px;background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .subtitle{color:var(--muted);font-size:13px;letter-spacing:.05em}
+  .meta-row{display:flex;gap:24px;flex-wrap:wrap;margin-top:24px}
+  .meta-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+  .meta-item span{color:var(--accent);font-weight:600}
+  .section{margin-bottom:52px}
+  .section-label{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+  .section-num{font-size:11px;font-weight:700;color:var(--accent);background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);padding:3px 8px;border-radius:3px;letter-spacing:.05em}
+  h2{font-family:var(--sans);font-size:18px;font-weight:700;color:#fff;letter-spacing:-.01em}
+  h3{font-family:var(--sans);font-size:14px;font-weight:600;color:var(--accent2);margin-bottom:12px;margin-top:24px;letter-spacing:.02em}
+  h4{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;margin-top:16px;text-transform:uppercase;letter-spacing:.08em}
+  p{color:#94a3b8;margin-bottom:12px;line-height:1.8}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:16px;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent)}
+  .card.blue::before{background:linear-gradient(90deg,var(--accent2),transparent)}
+  .card.yellow::before{background:linear-gradient(90deg,var(--accent3),transparent)}
+  .card.red::before{background:linear-gradient(90deg,var(--danger),transparent)}
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:16px}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{background:var(--surface2);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:10px;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border)}
+  td{padding:10px 16px;border-bottom:1px solid rgba(30,45,66,.5);color:#94a3b8;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--text);font-weight:500}
+  td code,th code{background:rgba(0,212,170,.08);color:var(--accent);padding:1px 6px;border-radius:3px;font-size:11px}
+  pre{background:#060a10;border:1px solid var(--border);border-radius:6px;padding:20px;overflow-x:auto;margin-bottom:16px;position:relative}
+  pre code{font-family:var(--mono);font-size:12px;color:#a8b4c8;line-height:1.8}
+  .formula{background:rgba(0,212,170,.04);border:1px solid rgba(0,212,170,.15);border-left:3px solid var(--accent);border-radius:4px;padding:16px 20px;margin:16px 0;font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.02em;line-height:2}
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.05em;margin:2px}
+  .pg{background:rgba(0,212,170,.12);color:var(--accent);border:1px solid rgba(0,212,170,.25)}
+  .pb{background:rgba(59,130,246,.12);color:var(--accent2);border:1px solid rgba(59,130,246,.25)}
+  .py{background:rgba(245,158,11,.12);color:var(--accent3);border:1px solid rgba(245,158,11,.25)}
+  .pr{background:rgba(239,68,68,.12);color:var(--danger);border:1px solid rgba(239,68,68,.25)}
+  .warning{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-left:3px solid var(--danger);border-radius:4px;padding:14px 18px;margin:16px 0;font-size:12px;color:#fca5a5;display:flex;gap:10px;align-items:flex-start}
+  .warning::before{content:'⚠';flex-shrink:0}
+  .info{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-left:3px solid var(--accent2);border-radius:4px;padding:14px 18px;margin:16px 0;font-size:12px;color:#93c5fd;display:flex;gap:10px;align-items:flex-start}
+  .info::before{content:'ℹ';flex-shrink:0}
+  .status-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:16px}
+  .sc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px}
+  .sc-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+  .sc-value{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--accent)}
+  .sc-sub{font-size:11px;color:var(--muted);margin-top:4px}
+  .arch{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:28px;font-family:var(--mono);font-size:12px;line-height:2.2}
+  .kw{color:#c792ea}.fn{color:#82aaff}.str{color:#c3e88d}.num{color:#f78c6c}.cm{color:#546e7a;font-style:italic}.ac{color:var(--accent);font-weight:600}.ac2{color:var(--accent2)}.ac3{color:var(--accent3)}
+  .footer{border-top:1px solid var(--border);padding-top:32px;margin-top:80px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+  .footer-brand{font-family:var(--sans);font-weight:700;font-size:16px;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .footer-meta{font-size:11px;color:var(--muted)}
+  hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+  ul{list-style:none;padding:0}
+  ul li{padding:4px 0 4px 16px;color:#94a3b8;position:relative;font-size:13px}
+  ul li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:11px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:640px){.two-col{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrapper">
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="badge">DollarUp · Pendle Agent · V5.5.1 Production</div>
-    <h1>Agente Inteligente de Alocação Pendle</h1>
-    <p class="subtitle">Especificação Técnica e Blueprint de Engenharia — PT Only</p>
-    <div class="meta-row">
-      <div class="meta-item">Versão <span>5.5.1-pt-only</span></div>
-      <div class="meta-item">Rede <span>Arbitrum One</span></div>
-      <div class="meta-item">Estratégia <span>PT Only (sem YT)</span></div>
-      <div class="meta-item">Modo padrão <span>DRY_RUN</span></div>
-      <div class="meta-item">Atualizado <span>Jun 2026</span></div>
-    </div>
+<!-- HEADER -->
+<div class="header">
+  <div class="badge">DollarUp · Pendle Agent · V5.5.1 PT-Only Production</div>
+  <h1>Agente Inteligente de Alocação Pendle</h1>
+  <p class="subtitle">Especificação Técnica e Blueprint de Engenharia — PT Only (sem YT)</p>
+  <div class="meta-row">
+    <div class="meta-item">Versão <span>5.5.1-pt-only</span></div>
+    <div class="meta-item">Rede <span>Arbitrum One</span></div>
+    <div class="meta-item">Modo padrão <span>DRY_RUN</span></div>
+    <div class="meta-item">Safe <span>0xBD20...ecE3</span></div>
+    <div class="meta-item">Atualizado <span>Jun 2026</span></div>
+  </div>
+</div>
+
+<!-- DECISÃO PT ONLY -->
+<div class="section">
+  <div class="section-label"><div class="section-num">00</div><h2>Decisão Estratégica: PT Only</h2></div>
+  <div class="card">
+    <p>Escopo restrito a <strong style="color:var(--accent)">Principal Tokens (PT)</strong> — yield fixo garantido até maturidade. YT excluído para capital de usuários por incompatibilidade com a proposta DollarUp de "rendimento passivo sem risco de perda do principal".</p>
+    <div class="info">YT pode ser considerado futuramente apenas para treasury própria da DollarUp (fees acumulados), nunca para capital de usuários.</div>
+  </div>
+</div>
+
+<!-- 1. OBJETIVO E MODOS -->
+<div class="section">
+  <div class="section-label"><div class="section-num">01</div><h2>Objetivo do Sistema e Modos de Operação</h2></div>
+  <p>O objetivo primário é monitorar, classificar e rebalancear de forma autônoma alocações em PT do protocolo Pendle Finance na Arbitrum, mitigando sistematicamente riscos de cauda, slippage e deterioração de liquidez.</p>
+
+  <h3>1.1 Isolamento de Ambiente via Modo Dry-Run</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>EXECUTION_MODE</th><th>Comportamento</th></tr></thead>
+      <tbody>
+        <tr><td><code>LIVE</code></td><td>Assina criptograficamente e transmite TXs via safe_executor → Safe multisig 1-de-3. Telemetria gravada ANTES da TX (atomicidade).</td></tr>
+        <tr><td><code>DRY_RUN</code></td><td>Interrompe obrigatoriamente antes de assinar ou enviar. Ações sufixadas com <code>*_SIMULATED</code>. Simula impactos no portfólio para auditoria. <strong>Default.</strong></td></tr>
+      </tbody>
+    </table>
   </div>
 
-  <!-- DECISÃO PT ONLY -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">00</div>
-      <h2>Decisão Estratégica: PT Only</h2>
-    </div>
-    <div class="card">
-      <p>O agente opera exclusivamente em <strong style="color:var(--accent)">Principal Tokens (PT)</strong> — yield fixo garantido até maturidade. YT (Yield Token) foi excluído do escopo para capital de usuários por razões de produto:</p>
-      <ul>
-        <li>YT é uma posição alavancada e especulativa — pode ir a zero no vencimento</li>
-        <li>Incompatível com a proposta DollarUp: "rendimento passivo, sem risco de perda do principal"</li>
-        <li>PT garante yield fixo independente de flutuações do underlying APY</li>
-      </ul>
-      <div class="info">YT pode ser considerado futuramente apenas para treasury própria da DollarUp (fees acumulados), nunca para capital de usuários.</div>
-    </div>
+  <h3>1.2 Status Atual</h3>
+  <div class="status-grid">
+    <div class="sc"><div class="sc-label">AUM Monitorado</div><div class="sc-value">$423</div><div class="sc-sub">Safe 0xBD20...ecE3</div></div>
+    <div class="sc"><div class="sc-label">Posição PT</div><div class="sc-value">$280</div><div class="sc-sub">290.28 PT-sUSDai-OCT2026</div></div>
+    <div class="sc"><div class="sc-label">Fixed APY</div><div class="sc-value">9.71%</div><div class="sc-sub">Implied: 6.61%</div></div>
+    <div class="sc"><div class="sc-label">Regime (Claude)</div><div class="sc-value" style="font-size:14px">HIGH_YIELD</div><div class="sc-sub">confidence=0.85 | bias=1.1</div></div>
+  </div>
+</div>
+
+<!-- 2. CONTRATOS DE IMPLEMENTAÇÃO -->
+<div class="section">
+  <div class="section-label"><div class="section-num">02</div><h2>Contratos de Implementação (Spec-to-Code Mapping)</h2></div>
+  <p>Para eliminar ambiguidades na tradução de regras de negócio para código, o sistema obedece às seguintes interfaces:</p>
+
+  <h3>2.1 Interface do Agente Principal (Core Agent)</h3>
+  <pre><code><span class="kw">class</span> <span class="fn">PendleAllocationAgent</span>:
+
+    <span class="kw">def</span> <span class="fn">observe</span>(self) -> MarketSnapshot:
+        <span class="cm">"""Coleta dados on-chain da AMM Pendle, taxas de gás e oráculos."""</span>
+
+    <span class="kw">def</span> <span class="fn">pre_validate</span>(self, snapshot: MarketSnapshot, ctx: AssetContext) -> PreValidationResult:
+        <span class="cm">"""Aplica filtros: TVL mínimo, Fixed APY mínimo, DaysToMaturity, limites de pool."""</span>
+
+    <span class="kw">def</span> <span class="fn">execute</span>(self, decision: ExecutionDecision) -> ExecutionResult:
+        <span class="cm">"""DRY_RUN: simula. LIVE: transmite via safe_executor após Slippage Gate."""</span>
+
+    <span class="kw">def</span> <span class="fn">cooldown</span>(self, reason: str, duration: int) -> None:
+        <span class="cm">"""Aplica estado de espera conforme matriz de falhas."""</span>
+
+    <span class="kw">def</span> <span class="fn">handle_failure</span>(self, error: AgentError) -> None:
+        <span class="cm">"""Incrementa contador horário e avalia gatilhos de escalonamento de risco."""</span></code></pre>
+
+  <h3>2.2 Funções do Core Quantitativo (Quant Math Engine)</h3>
+  <pre><code><span class="kw">def</span> <span class="fn">compute_delta_net</span>(ctx: AssetContext, snapshot: MarketSnapshot) -> float:
+    <span class="cm">"""ΔNet anualizado deduzindo CTEA completo (WAD precision)."""</span>
+
+<span class="kw">def</span> <span class="fn">compute_dynamic_threshold</span>(ctx: AssetContext, volatility_24h: float) -> float:
+    <span class="cm">"""Δtarget_effective = Δtarget_base + (k × σ_24h)"""</span>
+
+<span class="kw">def</span> <span class="fn">should_enter_pt</span>(delta_net: float, threshold: float, regime_bias: float) -> bool:
+    <span class="cm">"""ΔNet &lt; -(threshold × regime_bias) → PT atrativo (mercado superprecifica yield)."""</span>
+
+<span class="kw">def</span> <span class="fn">should_exit_position</span>(pos: PositionState, snapshot: MarketSnapshot, ctx: AssetContext) -> bool:
+    <span class="cm">"""Gatilhos protetivos obrigatórios:
+    1. Quebra de Peg / risco do subjacente (LST/LRT descolando).
+    2. Fixed APY colapsou abaixo do piso histórico de segurança.
+    3. Deterioração severa de TVL e liquidez interna da AMM."""</span></code></pre>
+
+  <div class="info">Nota PT-Only: <code>should_enter_yt()</code> e <code>BREAKEVEN_VIOLATION</code> removidos do escopo. YT Decay Gate não aplicável.</div>
+
+  <h3>2.3 Arquitetura de Componentes</h3>
+  <div class="arch">
+    <span style="color:var(--accent);font-weight:700">pendle_agent.py</span> <span style="color:var(--muted);font-size:11px">— Worker principal (PM2)</span><br>
+    <span style="color:var(--border)">├── </span><span style="color:var(--accent2)">safe_executor.py</span> <span style="color:var(--muted)">→ TX via Safe multisig 1-de-3</span><br>
+    <span style="color:var(--border)">├── </span><span style="color:var(--accent2)">pendle_integration.py</span> <span style="color:var(--muted)">→ Posições on-chain Arbitrum</span><br>
+    <span style="color:var(--border)">└── </span><span style="color:var(--accent2)">ai_advisor.py</span> <span style="color:var(--muted)">→ Camada AI</span><br>
+    <span style="color:transparent">────</span><span style="color:var(--border)">├── </span><span style="color:var(--accent)">claude_classify_regime()</span> <span style="color:var(--muted)">→ Classificador de regime</span><br>
+    <span style="color:transparent">────</span><span style="color:var(--border)">├── </span><span style="color:var(--accent3)">perplexity_risk_scan()</span> <span style="color:var(--muted)">→ Risk scanner web real-time</span><br>
+    <span style="color:transparent">────</span><span style="color:var(--border)">└── </span><span style="color:var(--accent2)">generate_daily_report()</span> <span style="color:var(--muted)">→ Relatório diário PT-BR</span>
+  </div>
+</div>
+
+<!-- 3. MATRIZ DE ATIVOS -->
+<div class="section">
+  <div class="section-label"><div class="section-num">03</div><h2>Matriz de Ativos Parametrizável e Perfis de Risco Macro</h2></div>
+  <p>Nenhum parâmetro é hard-coded. O sistema lê dinamicamente um dicionário de configuração conforme <code>RISK_MODE</code>. O <code>regime_bias</code> combina o perfil ativo ao regime detectado pelo classificador AI.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Perfil</th><th>Δtarget_base</th><th>k (σ24h)</th><th>Max PT/portfolio</th><th>Max por pool</th><th>APY mínimo</th><th>DTM mínimo</th><th>Slippage</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill pb">CONSERVATIVE</span></td><td>80 bps</td><td>2.0</td><td>80%</td><td>70%</td><td>5%</td><td>30d</td><td>0.05%</td></tr>
+        <tr><td><span class="pill py">NEUTRAL</span></td><td>50 bps</td><td>1.5</td><td>80%</td><td>70%</td><td>4%</td><td>20d</td><td>0.10%</td></tr>
+      </tbody>
+    </table>
   </div>
 
-  <!-- STATUS ATUAL -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">01</div>
-      <h2>Status Atual da Implementação</h2>
-    </div>
-    <div class="status-grid">
-      <div class="status-card">
-        <div class="status-card-label">AUM Monitorado</div>
-        <div class="status-card-value">$423</div>
-        <div class="status-card-sub">Safe 0xBD20...ecE3</div>
-      </div>
-      <div class="status-card">
-        <div class="status-card-label">Posição PT Atual</div>
-        <div class="status-card-value">$280</div>
-        <div class="status-card-sub">290.28 PT-sUSDai-OCT2026</div>
-      </div>
-      <div class="status-card">
-        <div class="status-card-label">Fixed APY</div>
-        <div class="status-card-value">9.71%</div>
-        <div class="status-card-sub">Implied APY: 6.61%</div>
-      </div>
-      <div class="status-card">
-        <div class="status-card-label">Último Regime (Claude)</div>
-        <div class="status-card-value" style="font-size:14px;color:var(--accent)">HIGH_YIELD</div>
-        <div class="status-card-sub">confidence=0.85 | bias=1.1</div>
-      </div>
-    </div>
+  <h3>3.1 Limites de Alocação por Tese e Pool</h3>
+  <ul>
+    <li><strong style="color:var(--text)">Stablecoins PT:</strong> Máximo 80% do portfólio global</li>
+    <li><strong style="color:var(--text)">LRT / LST PT:</strong> Máximo 50% (risco de descolamento / slashing)</li>
+    <li><strong style="color:var(--text)">Limite por Pool:</strong> Teto rígido de 70% por pool individual (risco idiossincrásico)</li>
+  </ul>
+  <div class="info">Perfil AGGRESSIVE removido — incompatível com PT-Only para capital de usuários DollarUp.</div>
+
+  <h3>3.2 Mercados Ativos — Arbitrum One</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>PT</th><th>Market Address</th><th>PT Address</th><th>Maturidade</th><th>TVL</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>PT-sUSDai-OCT2026</td>
+          <td><code>0xcbf629c8...94787d8</code></td>
+          <td><code>0xb459db10...675cc</code></td>
+          <td>15/10/2026</td>
+          <td>$10.8M</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+  <pre><code><span class="cm"># Endpoint correto API Pendle (v1, não v2)</span>
+GET https://api-v2.pendle.finance/core/<span class="ac">v1</span>/42161/markets/{market_address}
 
-  <!-- ARQUITETURA -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">02</div>
-      <h2>Arquitetura de Componentes</h2>
-    </div>
-    <div class="arch">
-      <div class="arch-root">pendle_agent.py &nbsp;<span class="arch-desc" style="font-size:11px;color:var(--muted)">— Worker principal (PM2)</span></div>
-      <div class="arch-child"><span class="arch-file">safe_executor.py</span> <span class="arch-desc">→ Execução TX via Safe multisig 1-de-3</span></div>
-      <div class="arch-child"><span class="arch-file">pendle_integration.py</span> <span class="arch-desc">→ Leitura posições on-chain Arbitrum</span></div>
-      <div class="arch-child"><span class="arch-file">ai_advisor.py</span> <span class="arch-desc">→ Camada de inteligência AI</span>
-        <div class="arch-sub" style="padding-left:40px"><span class="arch-file" style="color:var(--accent)">claude_classify_regime()</span> <span class="arch-desc">→ Classificador de regime de mercado</span></div>
-        <div class="arch-sub" style="padding-left:40px;padding-left:40px"><span class="arch-file" style="color:var(--accent3)">perplexity_risk_scan()</span> <span class="arch-desc">→ Risk scanner externo (web real-time)</span></div>
-        <div class="arch-sub" style="padding-left:40px"><span class="arch-file" style="color:var(--accent2)">generate_daily_report()</span> <span class="arch-desc">→ Relatório diário em português</span></div>
-      </div>
-    </div>
+impliedApy            → fixed_apy       <span class="cm"># APY fixo do PT</span>
+underlyingInterestApy → underlying_apy  <span class="cm"># APY do ativo subjacente</span>
+liquidity.usd         → tvl_usd
+pt.price.usd          → pt_price</code></pre>
+</div>
 
-    <h3>Fluxo de Execução por Ciclo (15 min)</h3>
-    <pre><code><span class="cm"># 1. Risk scan externo (Perplexity — 1x/dia às 06h)</span>
-<span class="fn">risk</span> = perplexity_risk_scan([<span class="str">'Pendle'</span>, <span class="str">'sUSDai'</span>, <span class="str">'Morpho'</span>, <span class="str">'Aave'</span>])
-<span class="kw">if</span> risk.severity == <span class="str">'CRITICAL'</span>: trigger_circuit_breaker()
+<!-- 4. LÓGICA QUANTITATIVA -->
+<div class="section">
+  <div class="section-label"><div class="section-num">04</div><h2>Lógica Quantitativa de Decisão e Consistência Dimensional</h2></div>
+  <p>Custos pontuais (Gas e Slippage) são anualizados dividindo pelo prazo de vencimento. Toda aritmética usa precisão WAD.</p>
 
-<span class="cm"># 2. Observe — dados on-chain e API</span>
-<span class="fn">snapshot</span> = fetch_pendle_market_data(market_id)  <span class="cm"># API v1 Arbitrum</span>
-<span class="fn">position</span> = get_current_pt_position(safe_address)
-<span class="fn">portfolio</span> = get_portfolio_total(safe_address)
+  <h3>4.1 CTEA Anualizado</h3>
+  <div class="formula">CTEA = (GasUSD + SlippageInUSD + SlippageOutUSD) / NotionalUSD × (365 / DaysToMaturity)</div>
 
-<span class="cm"># 3. Pre-validate — filtros obrigatórios</span>
-<span class="fn">validation</span> = pre_validate(snapshot, asset_ctx)
-<span class="kw">if not</span> validation.passed: <span class="kw">continue</span>
-
-<span class="cm"># 4. Quant Math Engine — ΔNet e threshold</span>
-<span class="fn">cost</span>      = compute_ctea(gas, slip_in, slip_out, notional, dtm)
-<span class="fn">delta_net</span> = compute_delta_net(snapshot, cost)
-<span class="fn">threshold</span> = compute_dynamic_threshold(profile, yvi)
-
-<span class="cm"># 5. Claude — classifica regime e ajusta regime_bias</span>
-<span class="fn">regime</span> = claude_classify_regime(snapshot_dict)
-<span class="fn">bias</span>   = regime.regime_bias  <span class="cm"># 1.0 se fallback ativo</span>
-
-<span class="cm"># 6. Decisão</span>
-<span class="kw">if</span>   delta_net &lt; -(threshold * bias): action = <span class="acc">ROTATE_TO_PT</span>
-<span class="kw">elif</span> should_exit(snapshot, position):  action = <span class="acc3">EXIT_PT</span>
-<span class="kw">else</span>:                                   action = <span class="acc2">HOLD_NO_OP</span>
-
-<span class="cm"># 7. Execute via Safe (telemetria gravada ANTES da TX em LIVE)</span>
-emit_telemetry(snapshot, decision, state)  <span class="cm"># atomicidade garantida</span>
-result = execute(decision, state)          <span class="cm"># DRY_RUN ou LIVE</span></code></pre>
-  </div>
-
-  <!-- MODOS -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">03</div>
-      <h2>Modos de Operação</h2>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Variável de Ambiente</th>
-            <th>Valor</th>
-            <th>Comportamento</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>PENDLE_EXECUTION_MODE</code></td>
-            <td><span class="pill pill-blue">DRY_RUN</span></td>
-            <td>Simula decisões sem assinar TX. Sufixo _SIMULATED na telemetria. <strong>Default</strong>.</td>
-          </tr>
-          <tr>
-            <td><code>PENDLE_EXECUTION_MODE</code></td>
-            <td><span class="pill pill-green">LIVE</span></td>
-            <td>Executa via safe_executor → Safe multisig. Telemetria gravada ANTES da TX.</td>
-          </tr>
-          <tr>
-            <td><code>PENDLE_RISK_MODE</code></td>
-            <td><span class="pill pill-blue">CONSERVATIVE</span></td>
-            <td>Δbase=80bps, k=2.0, slippage=0.05%, max PT=80%. Default.</td>
-          </tr>
-          <tr>
-            <td><code>PENDLE_RISK_MODE</code></td>
-            <td><span class="pill pill-yellow">NEUTRAL</span></td>
-            <td>Δbase=50bps, k=1.5, slippage=0.10%, max PT=80%.</td>
-          </tr>
-          <tr>
-            <td><code>PENDLE_AGENT_HALT</code></td>
-            <td><span class="pill pill-red">true</span></td>
-            <td>Ativa CRITICAL_HALT manual. Destravamento: setar false + reiniciar worker.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- PERFIS DE RISCO -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">04</div>
-      <h2>Perfis de Risco (PT Only)</h2>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Perfil</th>
-            <th>Δtarget_base</th>
-            <th>k (σ24h)</th>
-            <th>Max PT/portfolio</th>
-            <th>Max por pool</th>
-            <th>APY mínimo</th>
-            <th>Slippage</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="pill pill-blue">CONSERVATIVE</span></td>
-            <td>80 bps</td>
-            <td>2.0</td>
-            <td>80%</td>
-            <td>70%</td>
-            <td>5%</td>
-            <td>0.05%</td>
-          </tr>
-          <tr>
-            <td><span class="pill pill-yellow">NEUTRAL</span></td>
-            <td>50 bps</td>
-            <td>1.5</td>
-            <td>80%</td>
-            <td>70%</td>
-            <td>4%</td>
-            <td>0.10%</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="info">Perfil AGGRESSIVE removido — incompatível com PT-Only para capital de usuários DollarUp.</div>
-  </div>
-
-  <!-- LÓGICA QUANTITATIVA -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">05</div>
-      <h2>Lógica Quantitativa</h2>
-    </div>
-
-    <h3>5.1 CTEA Anualizado</h3>
-    <div class="formula">CTEA = (GasUSD + SlippageEntry + SlippageExit) / NotionalUSD × (365 / DTM)</div>
-    <p>Todos os custos pontuais (gas e slippage) são anualizados pelo prazo de vencimento para comparação dimensional correta com APY.</p>
-
-    <h3>5.2 ΔNet</h3>
-    <div class="formula">ΔNet = ΔTime − CTEA − RiscoSaídaAnualizado<br>
+  <h3>4.2 ΔNet</h3>
+  <div class="formula">ΔNet = ΔTime − CTEA − RiscoSaídaAnualizado<br>
 ΔTime = fixed_apy − implied_apy<br>
 RiscoSaída = 0.005 (0.5% a.a. conservador)</div>
 
-    <h3>5.3 YVI — Yield Volatility Index</h3>
-    <div class="formula">σ24h = desvio padrão amostral dos ΔNet horários das últimas 24h<br>
-Δtarget_effective = Δtarget_base + (k × σ24h)</div>
+  <h3>4.3 YVI — Yield Volatility Index (σ24h)</h3>
+  <p>Definido como o <strong>desvio padrão amostral dos valores de ΔNet calculados a cada hora nas últimas 24 horas</strong>. Baliza o limiar dinâmico:</p>
+  <div class="formula">Δtarget_effective = Δtarget_base + (k × σ24h)</div>
 
-    <h3>5.4 Árvore de Decisão PT</h3>
-    <pre><code><span class="cm"># Prioridade 1: Saída protetiva (verifica antes de qualquer entrada)</span>
-<span class="kw">if</span> fixed_apy &lt; min_fixed_apy:                   → <span class="acc3">EXIT_PT</span>  <span class="cm"># APY colapsou</span>
-<span class="kw">if</span> tvl_usd &lt; min_tvl × <span class="num">0.3</span>:                    → <span class="acc3">EXIT_PT</span>  <span class="cm"># TVL deteriorou</span>
-<span class="kw">if</span> days_to_maturity &lt; <span class="num">7</span> and position &gt; <span class="num">0</span>:      → <span class="acc3">EXIT_PT</span>  <span class="cm"># Vencimento próximo</span>
+  <h3>4.4 Árvore de Decisão PT (PT-Only)</h3>
+  <pre><code><span class="cm"># Prioridade 1 — Saída protetiva (verifica antes de qualquer entrada)</span>
+<span class="kw">if</span> fixed_apy &lt; min_fixed_apy:              → <span class="ac3">EXIT_PT</span>  <span class="cm"># APY colapsou</span>
+<span class="kw">if</span> tvl_usd &lt; min_tvl × <span class="num">0.3</span>:               → <span class="ac3">EXIT_PT</span>  <span class="cm"># TVL deteriorou</span>
+<span class="kw">if</span> days_to_maturity &lt; <span class="num">7</span> and position &gt; <span class="num">0</span>: → <span class="ac3">EXIT_PT</span>  <span class="cm"># Vencimento próximo</span>
 
-<span class="cm"># Prioridade 2: Entrada — mercado superprecifica yield</span>
-<span class="kw">if</span> delta_net &lt; -(threshold × regime_bias):      → <span class="acc">ROTATE_TO_PT</span>
+<span class="cm"># Prioridade 2 — Entrada: mercado superprecifica yield → PT atrativo</span>
+<span class="kw">if</span> delta_net &lt; -(threshold × regime_bias):  → <span class="ac">ROTATE_TO_PT</span>
 
-<span class="cm"># Prioridade 3: Inércia — banda efetiva</span>
-<span class="kw">if</span> -threshold ≤ delta_net ≤ threshold:          → <span class="acc2">HOLD_NO_OP</span>  <span class="cm"># Caso C</span></code></pre>
+<span class="cm"># Prioridade 3 — Inércia: banda efetiva</span>
+<span class="kw">if</span> -threshold ≤ delta_net ≤ threshold:      → <span class="ac2">HOLD_NO_OP</span></code></pre>
+
+  <div class="info">Nota: YT Decay Gate (BreakevenDays) removido do escopo PT-Only. BREAKEVEN_VIOLATION não aplicável.</div>
+
+  <h3>4.5 CES — Capital Efficiency Score (PT)</h3>
+  <div class="formula">CES = ΔNet / CTEA<br>
+<span style="font-size:11px;color:var(--muted)">Usado para rankear pools concorrentes. Pool com maior CES recebe alocação preferencial.</span></div>
+</div>
+
+<!-- 5. CENÁRIOS DE TESTE -->
+<div class="section">
+  <div class="section-label"><div class="section-num">05</div><h2>Cenários de Teste Obrigatórios (PT-Only)</h2></div>
+  <p>A suite de testes CI/CD deve validar obrigatoriamente os seguintes comportamentos em cada RISK_MODE para os Casos A e B.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Caso</th><th>Condições de Entrada</th><th>Comportamento Esperado</th><th>Flag</th></tr></thead>
+      <tbody>
+        <tr><td>A: PT Atrativo</td><td>Implied APY elevado (mercado superprecificando yield); ΔNet fortemente negativo; CTEA baixo</td><td>Trava taxa fixa adquirindo Principal Token</td><td><code>ROTATE_TO_PT</code></td></tr>
+        <tr><td>B: Zona de Inércia</td><td>ΔNet próximo de zero; YVI alto alargando bandas efetivas</td><td>Bloqueia novas TXs; mantém posição atual inalterada</td><td><code>HOLD_NO_OP</code></td></tr>
+        <tr><td>C: Exit Protetivo</td><td>Fixed APY abaixo do mínimo OU TVL colapso OU DTM &lt; 7d</td><td>Sai do PT; protege capital do usuário</td><td><code>EXIT_PT</code></td></tr>
+        <tr><td>D: Risco Externo</td><td>Perplexity severity=CRITICAL ou HIGH em protocolo do portfólio</td><td>Circuit breaker; bloqueia novas TXs; mantém posição</td><td><code>CIRCUIT_BREAKER</code></td></tr>
+        <tr><td>E: Failsafe</td><td>5+ falhas operacionais em 60 minutos</td><td>Trava assinaturas; observação passiva continua</td><td><code>CRITICAL_HALT</code></td></tr>
+        <tr><td>F: Fallback AI</td><td>confidence &lt; 0.65 ou Claude indisponível</td><td>Ignora viés do preditor; opera com equações matemáticas neutras (regime_bias=1.0)</td><td><code>FALLBACK_DETERMINISTIC_ACTIVE</code></td></tr>
+      </tbody>
+    </table>
   </div>
+</div>
 
-  <!-- CAMADA AI -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">06</div>
-      <h2>Camada AI (ai_advisor.py)</h2>
-    </div>
+<!-- 6. CAMADA AI -->
+<div class="section">
+  <div class="section-label"><div class="section-num">06</div><h2>Camada Inteligente e Fallback Preditivo</h2></div>
+  <p>O classificador AI atua <strong>estritamente como modificador de viés</strong> das equações matemáticas. Se confiança &lt; 65%, o motor ativa o Fallback Determinístico, forçando <code>regime_bias = 1.0</code>.</p>
 
-    <div class="card accent2">
+  <div class="two-col">
+    <div class="card blue">
       <h3 style="margin-top:0;color:var(--accent2)">Claude — Classificador de Regime</h3>
       <ul>
         <li>Modelo: <code>claude-sonnet-4-20250514</code></li>
         <li>Input: snapshot JSON (fixed_apy, implied_apy, ΔNet, TVL, DTM, YVI)</li>
         <li>Output: regime, confidence, regime_bias, reasoning</li>
-        <li>Fallback determinístico se confidence &lt; 0.65 → regime_bias = 1.0</li>
+        <li>Threshold: <code>PREDICTOR_CONFIDENCE_THRESHOLD = 0.65</code></li>
         <li>Remove markdown automático (Claude retorna com backticks)</li>
+        <li>Fallback se confidence &lt; 0.65 ou erro de API</li>
       </ul>
-      <pre style="margin-top:16px"><code><span class="cm"># Resultado real do teste (03/06/2026)</span>
+      <pre style="margin-top:16px"><code><span class="cm"># Resultado real — 03/06/2026</span>
 {
   <span class="str">"regime"</span>:      <span class="str">"HIGH_YIELD"</span>,
   <span class="str">"confidence"</span>:  <span class="num">0.85</span>,
   <span class="str">"regime_bias"</span>: <span class="num">1.1</span>,
-  <span class="str">"reasoning"</span>:   <span class="str">"Fixed APY 9.71% está 310bps acima do implied 6.61%..."</span>,
   <span class="str">"fallback"</span>:    <span class="kw">false</span>
 }</code></pre>
     </div>
 
-    <div class="card accent3">
-      <h3 style="margin-top:0;color:var(--accent3)">Perplexity — Risk Scanner Externo</h3>
+    <div class="card yellow">
+      <h3 style="margin-top:0;color:var(--accent3)">Perplexity — Risk Scanner</h3>
       <ul>
         <li>Modelo: <code>sonar</code> (busca web real-time)</li>
         <li>Frequência: 1x/dia às 06h</li>
         <li>Monitora: Pendle, sUSDai, Morpho, Compound, Aave</li>
-        <li>Output: risk_events[], severity, safe_to_operate</li>
-        <li>severity CRITICAL ou HIGH → circuit breaker automático</li>
+        <li>CRITICAL/HIGH → circuit breaker automático</li>
+        <li>Indisponível → safe_to_operate=true (não bloqueia)</li>
       </ul>
-      <pre style="margin-top:16px"><code><span class="cm"># Resultado real do teste (03/06/2026)</span>
+      <pre style="margin-top:16px"><code><span class="cm"># Resultado real — 03/06/2026</span>
 {
   <span class="str">"risk_events"</span>:     [],
   <span class="str">"severity"</span>:        <span class="str">"NONE"</span>,
-  <span class="str">"safe_to_operate"</span>: <span class="kw">true</span>,
-  <span class="str">"summary"</span>:         <span class="str">"No security incidents found..."</span>
+  <span class="str">"safe_to_operate"</span>: <span class="kw">true</span>
 }</code></pre>
     </div>
-
-    <div class="card">
-      <h3 style="margin-top:0">Fallback Determinístico</h3>
-      <div class="table-wrap" style="margin-top:12px">
-        <table>
-          <thead><tr><th>Condição</th><th>Comportamento</th><th>Flag</th></tr></thead>
-          <tbody>
-            <tr><td>confidence &lt; 0.65</td><td>regime_bias = 1.0 (neutro)</td><td><code>FALLBACK_DETERMINISTIC_ACTIVE</code></td></tr>
-            <tr><td>Claude indisponível</td><td>Fallback ativo automaticamente</td><td><code>FALLBACK_DETERMINISTIC_ACTIVE</code></td></tr>
-            <tr><td>Perplexity indisponível</td><td>safe_to_operate = true (não bloqueia)</td><td><code>PERPLEXITY_UNAVAILABLE</code></td></tr>
-            <tr><td>JSON inválido</td><td>Retorna dict de fallback padrão</td><td><code>FALLBACK_DETERMINISTIC_ACTIVE</code></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
   </div>
 
-  <!-- CENÁRIOS DE TESTE -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">07</div>
-      <h2>Cenários de Teste (PT Only)</h2>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Caso</th>
-            <th>Condições</th>
-            <th>Comportamento Esperado</th>
-            <th>Flag</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>A: PT Atrativo</td>
-            <td>fixed_apy >> implied_apy, CTEA baixo, TVL saudável</td>
-            <td>Compra PT até limite do pool</td>
-            <td><code>ROTATE_TO_PT</code></td>
-          </tr>
-          <tr>
-            <td>B: Zona Inércia</td>
-            <td>ΔNet ≈ 0, YVI alto alargando bandas</td>
-            <td>Mantém posição atual inalterada</td>
-            <td><code>HOLD_NO_OP</code></td>
-          </tr>
-          <tr>
-            <td>C: Exit Protetivo</td>
-            <td>fixed_apy abaixo do mínimo ou TVL colapso</td>
-            <td>Sai do PT para proteger capital</td>
-            <td><code>EXIT_PT</code></td>
-          </tr>
-          <tr>
-            <td>D: Risco Externo</td>
-            <td>Perplexity severity=CRITICAL</td>
-            <td>Bloqueia novas TXs, mantém posição</td>
-            <td><code>CIRCUIT_BREAKER</code></td>
-          </tr>
-          <tr>
-            <td>E: Falhas Acumuladas</td>
-            <td>5+ erros em 60 minutos</td>
-            <td>Trava agente — reset manual</td>
-            <td><code>CRITICAL_HALT</code></td>
-          </tr>
-          <tr>
-            <td>F: Fallback AI</td>
-            <td>confidence &lt; 0.65 ou Claude indisponível</td>
-            <td>Modo determinístico, regime_bias=1.0</td>
-            <td><code>FALLBACK_DETERMINISTIC</code></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <h3>6.1 Matriz de Fallback</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Condição</th><th>Comportamento</th><th>Flag</th></tr></thead>
+      <tbody>
+        <tr><td>confidence &lt; 0.65</td><td>regime_bias = 1.0 (neutro forçado)</td><td><code>FALLBACK_DETERMINISTIC_ACTIVE</code></td></tr>
+        <tr><td>Claude indisponível / timeout</td><td>Fallback ativo automaticamente</td><td><code>FALLBACK_DETERMINISTIC_ACTIVE</code></td></tr>
+        <tr><td>JSON inválido retornado</td><td>Retorna dict fallback padrão</td><td><code>FALLBACK_DETERMINISTIC_ACTIVE</code></td></tr>
+        <tr><td>Perplexity indisponível</td><td>safe_to_operate = true (não bloqueia)</td><td><code>PERPLEXITY_UNAVAILABLE</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 7. INFRAESTRUTURA E COOLDOWN -->
+<div class="section">
+  <div class="section-label"><div class="section-num">07</div><h2>Infraestrutura, Matriz de Cooldown e Protocolo de Saída</h2></div>
+  <p>Erros operacionais disparam tempos de descanso específicos conforme a gravidade da falha detectada.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Tipo de Erro</th><th>Cooldown</th><th>Saída</th></tr></thead>
+      <tbody>
+        <tr><td>RPC_ERROR</td><td>60s</td><td>Automática</td></tr>
+        <tr><td>API_ERROR</td><td>120s</td><td>Automática</td></tr>
+        <tr><td>SLIPPAGE_EXCEEDED</td><td>300s</td><td>Automática</td></tr>
+        <tr><td>TX_REVERTED</td><td>600s</td><td>Automática</td></tr>
+        <tr><td><strong style="color:var(--danger)">CRITICAL_HALT</strong></td><td>∞</td><td><strong style="color:var(--danger)">Manual obrigatório</strong></td></tr>
+      </tbody>
+    </table>
   </div>
 
-  <!-- COOLDOWN -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">08</div>
-      <h2>Matriz de Cooldown e CRITICAL_HALT</h2>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Tipo de Erro</th><th>Cooldown</th><th>Saída</th></tr></thead>
-        <tbody>
-          <tr><td>RPC_ERROR</td><td>60s</td><td>Automática</td></tr>
-          <tr><td>API_ERROR</td><td>120s</td><td>Automática</td></tr>
-          <tr><td>SLIPPAGE_EXCEEDED</td><td>300s</td><td>Automática</td></tr>
-          <tr><td>TX_REVERTED</td><td>600s</td><td>Automática</td></tr>
-          <tr><td>CRITICAL_HALT</td><td>∞</td><td><strong style="color:var(--danger)">Manual: PENDLE_AGENT_HALT=false + restart</strong></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="card danger">
-      <p style="margin:0;color:#fca5a5">Em CRITICAL_HALT o agente <strong>para de assinar TXs</strong> mas mantém observe() e pre_validate() rodando passivamente para telemetria. Não há saída automática — exige intervenção manual do operador.</p>
-    </div>
+  <h3>7.1 Protocolo de Saída de CRITICAL_HALT</h3>
+  <div class="card red">
+    <p style="margin:0;color:#fca5a5">Uma vez em travamento, o agente <strong>interrompe assinaturas e TXs on-chain</strong>, mas mantém em background as rotinas <code>observe()</code> e <code>pre_validate()</code> de forma passiva para telemetria.</p>
+    <br>
+    <p style="margin:0;color:#fca5a5"><strong>Não há saída automática via cron ou scripts.</strong> O destravamento exige intervenção manual do operador: setar <code>PENDLE_AGENT_HALT=false</code> no .env e reiniciar o worker.</p>
   </div>
 
-  <!-- MERCADOS ATIVOS -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">09</div>
-      <h2>Mercados Ativos — Arbitrum One</h2>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>PT</th><th>Market Address</th><th>PT Address</th><th>Maturidade</th><th>TVL</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>PT-sUSDai-OCT2026</td>
-            <td><code>0xcbf629c8...94787d8</code></td>
-            <td><code>0xb459db10...675cc</code></td>
-            <td>15/10/2026</td>
-            <td>$10.8M</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <h3>7.2 Variáveis de Ambiente</h3>
+  <pre><code><span class="cm"># Controle do agente</span>
+<span class="ac">PENDLE_EXECUTION_MODE</span>=DRY_RUN       <span class="cm"># DRY_RUN | LIVE</span>
+<span class="ac">PENDLE_RISK_MODE</span>=CONSERVATIVE       <span class="cm"># CONSERVATIVE | NEUTRAL</span>
+<span class="ac">PENDLE_AGENT_HALT</span>=false             <span class="cm"># true = CRITICAL_HALT manual</span>
 
-    <h3>Endpoint API Correto</h3>
-    <pre><code><span class="cm"># v1 — não v2 (v2 retorna 404)</span>
-GET https://api-v2.pendle.finance/core/<span class="acc">v1</span>/42161/markets/{market_address}
+<span class="cm"># AI Advisor</span>
+<span class="ac2">ANTHROPIC_API_KEY</span>=sk-ant-...
+<span class="ac3">PERPLEXITY_API_KEY</span>=pplx-...
 
-<span class="cm"># Campos utilizados:</span>
-impliedApy          → fixed_apy      <span class="cm"># APY fixo do PT</span>
-underlyingInterestApy → underlying_apy_7d
-liquidity.usd       → tvl_usd
-pt.price.usd        → pt_price</code></pre>
+<span class="cm"># Safe (já configurado)</span>
+SAFE_ADDRESS=0xBD20A8962B98633f8FC7728F815789b7a90aecE3</code></pre>
+  <div class="warning">Chaves ANTHROPIC_API_KEY e PERPLEXITY_API_KEY expostas em log. Revogar em console.anthropic.com e perplexity.ai/settings/api.</div>
+</div>
 
-    <h3>Auto-Descoberta de Novos Mercados (pendente)</h3>
-    <pre><code><span class="cm"># Lista todos os mercados PT na Arbitrum</span>
-GET https://api-v2.pendle.finance/core/v1/42161/markets?limit=100
+<!-- 8. TELEMETRIA -->
+<div class="section">
+  <div class="section-label"><div class="section-num">08</div><h2>Governança de Telemetria, Retenção e Reprodutibilidade</h2></div>
+  <p>Todos os payloads são estruturados em JSON e persistidos em <code>pendle_telemetry.jsonl</code> com retenção mínima de 12-24 meses para auditoria regulatória e tuning de modelos.</p>
 
-<span class="cm"># Filtrar por: isActive=true, DTM > 30d, TVL > $1M</span></code></pre>
+  <div class="card">
+    <p style="margin:0;color:var(--accent)"><strong>Garantia de Atomicidade:</strong> Em modo LIVE, o payload completo é gravado ANTES da TX ser submetida. O <code>replay_id</code> contém contexto exato e imutável da decisão — mesmo em crash do nó, a decisão é auditável.</p>
   </div>
 
-  <!-- TELEMETRIA -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">10</div>
-      <h2>Telemetria — Schema V5.5.1</h2>
-    </div>
-    <div class="warning">Em modo LIVE, o payload completo é gravado em pendle_telemetry.jsonl ANTES da TX ser submetida — garantia de atomicidade e replay_id para auditoria.</div>
-    <pre><code>{
-  <span class="str">"timestamp"</span>:    <span class="num">1780497708</span>,
-  <span class="str">"replay_id"</span>:    <span class="str">"arb-pendle-v5.5.1-pt-only-1780497708"</span>,
+  <h3>8.1 Schema V5.5.1 — Payload Completo</h3>
+  <pre><code>{
+  <span class="str">"timestamp"</span>:      <span class="num">1780497708</span>,
+  <span class="str">"replay_id"</span>:      <span class="str">"arb-pendle-v5.5.1-pt-only-1780497708"</span>,
   <span class="str">"execution_mode"</span>: <span class="str">"DRY_RUN"</span>,
-  <span class="str">"risk_profile"</span>: <span class="str">"CONSERVATIVE"</span>,
+  <span class="str">"risk_profile"</span>:   <span class="str">"CONSERVATIVE"</span>,
 
   <span class="str">"strategy_intent"</span>: {
-    <span class="str">"regime_label"</span>:     <span class="str">"HIGH_YIELD"</span>,
-    <span class="str">"model_confidence"</span>: <span class="num">0.85</span>,
-    <span class="str">"fallback_active"</span>:  <span class="kw">false</span>,
-    <span class="str">"entry_reason"</span>:     <span class="str">"ΔNet=-0.0091 &lt; -threshold(0.0080×1.0)"</span>
+    <span class="str">"regime_label"</span>:        <span class="str">"HIGH_YIELD"</span>,
+    <span class="str">"model_confidence"</span>:    <span class="num">0.85</span>,
+    <span class="str">"fallback_active"</span>:     <span class="kw">false</span>,
+    <span class="str">"entry_reason"</span>:        <span class="str">"ΔNet=-0.0091 &lt; -threshold(0.0080×1.0)"</span>,
+    <span class="str">"validation_gate_logs"</span>: <span class="str">"ALL_GATES_PASSED"</span>
   },
 
   <span class="str">"metrics"</span>: {
-    <span class="str">"fixed_apy"</span>:           <span class="num">0.0971</span>,
-    <span class="str">"implied_apy"</span>:         <span class="num">0.0661</span>,
-    <span class="str">"underlying_apy_7d"</span>:   <span class="num">0.0661</span>,
-    <span class="str">"tvl_usd"</span>:             <span class="num">10801147</span>,
-    <span class="str">"days_to_maturity"</span>:    <span class="num">133</span>,
-    <span class="str">"yvi_volatility_24h"</span>:  <span class="num">0.0</span>
+    <span class="str">"fixed_apy"</span>:          <span class="num">0.0971</span>,
+    <span class="str">"implied_apy"</span>:        <span class="num">0.0661</span>,
+    <span class="str">"underlying_apy_7d"</span>:  <span class="num">0.0661</span>,
+    <span class="str">"tvl_usd"</span>:            <span class="num">10801147</span>,
+    <span class="str">"days_to_maturity"</span>:   <span class="num">133</span>,
+    <span class="str">"yvi_volatility_24h"</span>: <span class="num">0.0</span>
   },
 
   <span class="str">"cost_breakdown"</span>: {
@@ -905,80 +418,61 @@ GET https://api-v2.pendle.finance/core/v1/42161/markets?limit=100
     <span class="str">"ctea_annualized"</span>:    <span class="num">0.0351</span>
   },
 
+  <span class="str">"capital_efficiency"</span>: {
+    <span class="str">"ces_score"</span>:              <span class="num">1.85</span>,
+    <span class="str">"recommended_allocation_pct"</span>: <span class="num">0.038</span>,
+    <span class="str">"competing_pools"</span>:        []
+  },
+
   <span class="str">"ai_advisor"</span>: {
-    <span class="str">"claude_regime"</span>:      <span class="str">"HIGH_YIELD"</span>,
-    <span class="str">"claude_confidence"</span>:  <span class="num">0.85</span>,
-    <span class="str">"claude_bias"</span>:        <span class="num">1.1</span>,
+    <span class="str">"claude_regime"</span>:       <span class="str">"HIGH_YIELD"</span>,
+    <span class="str">"claude_confidence"</span>:   <span class="num">0.85</span>,
+    <span class="str">"claude_bias"</span>:         <span class="num">1.1</span>,
     <span class="str">"perplexity_severity"</span>: <span class="str">"NONE"</span>,
-    <span class="str">"perplexity_safe"</span>:    <span class="kw">true</span>
+    <span class="str">"perplexity_safe"</span>:     <span class="kw">true</span>
   },
 
   <span class="str">"execution_engine"</span>: {
-    <span class="str">"current_state"</span>:          <span class="str">"OBSERVING"</span>,
-    <span class="str">"delta_net_calculated"</span>:    <span class="num">-0.0091</span>,
-    <span class="str">"delta_target_effective"</span>:  <span class="num">0.0080</span>,
-    <span class="str">"action_recommended"</span>:      <span class="str">"ROTATE_TO_PT_SIMULATED"</span>
+    <span class="str">"current_state"</span>:         <span class="str">"OBSERVING"</span>,
+    <span class="str">"delta_net_calculated"</span>:  <span class="num">-0.0091</span>,
+    <span class="str">"delta_target_effective"</span>: <span class="num">0.0080</span>,
+    <span class="str">"action_recommended"</span>:    <span class="str">"ROTATE_TO_PT_SIMULATED"</span>,
+    <span class="str">"min_out_calculated"</span>:    <span class="num">0.9995</span>
   },
 
   <span class="str">"infrastructure_health"</span>: {
     <span class="str">"hourly_failure_count"</span>:    <span class="num">0</span>,
     <span class="str">"current_state_machinery"</span>: <span class="str">"OBSERVING"</span>,
-    <span class="str">"critical_halt"</span>:          <span class="kw">false</span>
+    <span class="str">"active_cooldown_reason"</span>:  <span class="str">"NONE"</span>,
+    <span class="str">"critical_halt"</span>:           <span class="kw">false</span>
   }
 }</code></pre>
+</div>
+
+<!-- PENDENTE -->
+<div class="section">
+  <div class="section-label"><div class="section-num">09</div><h2>Implementações Pendentes</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Item</th><th>Prioridade</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Integrar ai_advisor.py no ciclo principal do pendle_agent.py</td><td><span class="pill pr">URGENTE</span></td><td>Pendente</td></tr>
+        <tr><td>2</td><td>Adicionar pendle-agent ao PM2</td><td><span class="pill pr">ALTA</span></td><td>Pendente</td></tr>
+        <tr><td>3</td><td>Revogar e regenerar chaves API (ANTHROPIC + PERPLEXITY)</td><td><span class="pill pr">URGENTE</span></td><td>Pendente</td></tr>
+        <tr><td>4</td><td>Auto-descoberta de novos mercados PT na Arbitrum</td><td><span class="pill py">MÉDIA</span></td><td>Pendente</td></tr>
+        <tr><td>5</td><td>Dashboard de visualização (pendle.html)</td><td><span class="pill py">MÉDIA</span></td><td>Pendente</td></tr>
+        <tr><td>6</td><td>Relatório diário via email (Zapier webhook)</td><td><span class="pill pb">BAIXA</span></td><td>Pendente</td></tr>
+        <tr><td>7</td><td>Persistência telemetria em PostgreSQL + TimescaleDB</td><td><span class="pill pb">BAIXA</span></td><td>Pendente</td></tr>
+      </tbody>
+    </table>
   </div>
+</div>
 
-  <!-- PENDENTE -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">11</div>
-      <h2>Implementações Pendentes</h2>
-    </div>
-    <div class="card">
-      <div class="table-wrap" style="margin:0">
-        <table>
-          <thead><tr><th>#</th><th>Item</th><th>Prioridade</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>1</td><td>Integrar ai_advisor.py no ciclo principal do pendle_agent.py</td><td><span class="pill pill-red">ALTA</span></td><td>Pendente</td></tr>
-            <tr><td>2</td><td>Adicionar pendle-agent ao PM2</td><td><span class="pill pill-red">ALTA</span></td><td>Pendente</td></tr>
-            <tr><td>3</td><td>Revogar e regenerar chaves API (ANTHROPIC + PERPLEXITY)</td><td><span class="pill pill-red">URGENTE</span></td><td>Pendente</td></tr>
-            <tr><td>4</td><td>Auto-descoberta de novos mercados PT na Arbitrum</td><td><span class="pill pill-yellow">MÉDIA</span></td><td>Pendente</td></tr>
-            <tr><td>5</td><td>Dashboard de visualização (pendle.html ou monitor.html)</td><td><span class="pill pill-yellow">MÉDIA</span></td><td>Pendente</td></tr>
-            <tr><td>6</td><td>Relatório diário via email (Zapier webhook)</td><td><span class="pill pill-blue">BAIXA</span></td><td>Pendente</td></tr>
-            <tr><td>7</td><td>Persistência telemetria em PostgreSQL (além de JSONL)</td><td><span class="pill pill-blue">BAIXA</span></td><td>Pendente</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- VARIÁVEIS DE AMBIENTE -->
-  <div class="section">
-    <div class="section-label">
-      <div class="section-num">12</div>
-      <h2>Variáveis de Ambiente</h2>
-    </div>
-    <pre><code><span class="cm"># /home/dollarup/apps/dollarup-mvp/backend/.env</span>
-
-<span class="cm"># Agente Pendle</span>
-<span class="acc">PENDLE_EXECUTION_MODE</span>=DRY_RUN    <span class="cm"># DRY_RUN | LIVE</span>
-<span class="acc">PENDLE_RISK_MODE</span>=CONSERVATIVE    <span class="cm"># CONSERVATIVE | NEUTRAL</span>
-<span class="acc">PENDLE_AGENT_HALT</span>=false         <span class="cm"># true = CRITICAL_HALT manual</span>
-
-<span class="cm"># AI Advisor</span>
-<span class="acc2">ANTHROPIC_API_KEY</span>=sk-ant-...    <span class="cm"># ⚠ REVOGAR e regenerar</span>
-<span class="acc3">PERPLEXITY_API_KEY</span>=pplx-...    <span class="cm"># ⚠ REVOGAR e regenerar</span>
-
-<span class="cm"># Safe (já configurado)</span>
-SAFE_ADDRESS=0xBD20A8962B98633f8FC7728F815789b7a90aecE3</code></pre>
-    <div class="warning">As chaves ANTHROPIC_API_KEY e PERPLEXITY_API_KEY foram expostas em log de chat. Revogar imediatamente em console.anthropic.com e perplexity.ai/settings/api.</div>
-  </div>
-
-  <!-- FOOTER -->
-  <div class="footer">
-    <div class="footer-brand">DollarUp · Pendle Agent</div>
-    <div class="footer-meta">V5.5.1-pt-only · Arbitrum One · Junho 2026 · Confidencial</div>
-  </div>
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-brand">DollarUp · Pendle Agent V5.5.1</div>
+  <div class="footer-meta">PT-Only · Arbitrum One · Junho 2026 · Confidencial</div>
+</div>
 
 </div>
 </body>
