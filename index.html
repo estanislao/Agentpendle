@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Especificação Técnica: Agente Inteligente Pendle (V5.3 - Production)</title>
+    <title>Especificação Técnica: Agente Inteligente Pendle (V5.4 - Production Blueprint)</title>
     <style>
         :root {
             --bg-main: #f4f6fa;
@@ -25,496 +25,268 @@
             --callout-warn-border: #ea580c;
         }
 
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { box-sizing: border-box; }
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: var(--text-main);
-            line-height: 1.6;
-            background-color: var(--bg-main);
+            color: var(--text-main); line-height: 1.6; background-color: var(--bg-main);
         }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px 24px;
-        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
 
-        /* Header Banner */
         .header-banner {
-            background-color: var(--primary-dark);
-            color: #ffffff;
-            padding: 45px 40px;
-            border-radius: 8px;
-            border-bottom: 4px solid var(--primary);
-            margin-bottom: 35px;
+            background-color: var(--primary-dark); color: #ffffff; padding: 45px 40px;
+            border-radius: 8px; border-bottom: 4px solid var(--primary); margin-bottom: 35px;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
         }
 
-        .header-banner h1 {
-            margin: 0 0 10px 0;
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: -0.75px;
-        }
+        .header-banner h1 { margin: 0 0 10px 0; font-size: 26px; font-weight: 700; letter-spacing: -0.75px; }
+        .header-banner .subtitle { font-size: 11px; color: var(--accent); margin: 0; text-transform: uppercase; letter-spacing: 2.5px; font-weight: 600; }
 
-        .header-banner .subtitle {
-            font-size: 11px;
-            color: var(--accent);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            font-weight: 600;
-        }
+        h2 { font-size: 19px; color: var(--primary-dark); margin-top: 40px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+        h3 { font-size: 15px; color: var(--primary); margin-top: 28px; margin-bottom: 12px; font-weight: 600; }
+        p { margin-top: 0; margin-bottom: 16px; text-align: justify; }
+        ul, ol { margin-top: 0; margin-bottom: 16px; padding-left: 24px; }
+        li { margin-bottom: 8px; text-align: justify; }
 
-        /* Typography */
-        h2 {
-            font-size: 19px;
-            color: var(--primary-dark);
-            margin-top: 40px;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--border);
-        }
+        .table-responsive { width: 100%; overflow-x: auto; margin: 24px 0; border-radius: 6px; border: 1px solid var(--border); box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; background-color: var(--bg-card); }
+        th, td { padding: 12px 16px; border: 1px solid var(--border); vertical-align: middle; }
+        th { background-color: var(--primary-dark); color: #ffffff; font-weight: 600; }
+        tr:nth-child(even) { background-color: var(--zebra); }
 
-        h3 {
-            font-size: 15px;
-            color: var(--primary);
-            margin-top: 28px;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
+        .callout { background-color: var(--accent-light); border-left: 4px solid var(--accent); padding: 16px; margin: 20px 0; border-radius: 0 6px 6px 0; }
+        .callout-warn { background-color: var(--callout-warn-bg); border-left: 4px solid var(--callout-warn-border); padding: 16px; margin: 20px 0; border-radius: 0 6px 6px 0; }
+        .callout-title { font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; font-size: 13px; }
 
-        p {
-            margin-top: 0;
-            margin-bottom: 16px;
-            text-align: justify;
-        }
+        .math-block { text-align: center; margin: 20px 0; padding: 16px; background-color: var(--math-bg); border: 1px solid var(--border); border-radius: 6px; font-size: 15px; }
+        .math { font-family: "Times New Roman", Times, serif; font-style: italic; font-weight: bold; color: var(--primary-dark); }
 
-        ul, ol {
-            margin-top: 0;
-            margin-bottom: 16px;
-            padding-left: 24px;
-        }
-
-        li {
-            margin-bottom: 8px;
-            text-align: justify;
-        }
-
-        /* Tabelas */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            margin: 24px 0;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 13px;
-            background-color: var(--bg-card);
-        }
-
-        th, td {
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            vertical-align: middle;
-        }
-
-        th {
-            background-color: var(--primary-dark);
-            color: #ffffff;
-            font-weight: 600;
-        }
-
-        tr:nth-child(even) {
-            background-color: var(--zebra);
-        }
-
-        /* Callouts */
-        .callout {
-            background-color: var(--accent-light);
-            border-left: 4px solid var(--accent);
-            padding: 16px;
-            margin: 20px 0;
-            border-radius: 0 6px 6px 0;
-        }
-        
-        .callout-warn {
-            background-color: var(--callout-warn-bg);
-            border-left: 4px solid var(--callout-warn-border);
-            padding: 16px;
-            margin: 20px 0;
-            border-radius: 0 6px 6px 0;
-        }
-
-        .callout-title {
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin-bottom: 6px;
-            font-size: 13px;
-        }
-
-        /* Blocos Matemáticos */
-        .math-block {
-            text-align: center;
-            margin: 20px 0;
-            padding: 16px;
-            background-color: var(--math-bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 15px;
-        }
-
-        .math {
-            font-family: "Times New Roman", Times, serif;
-            font-style: italic;
-            font-weight: bold;
-            color: var(--primary-dark);
-        }
-
-        /* Blocos de Código (JSON / Python) */
         pre {
-            background-color: var(--code-bg);
-            color: var(--code-text);
-            padding: 20px;
-            border-radius: 6px;
-            font-size: 11.5px;
-            overflow-x: auto;
-            margin: 24px 0;
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-            line-height: 1.6;
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+            background-color: var(--code-bg); color: var(--code-text); padding: 20px; border-radius: 6px; font-size: 11.5px;
+            overflow-x: auto; margin: 24px 0; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            line-height: 1.6; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.1);
         }
 
-        /* Diagrama da Máquina de Estados */
-        .diagram-container {
-            width: 100%;
-            overflow-x: auto;
-            margin: 30px 0;
-            padding: 10px 0;
-        }
-
-        .diagram-table {
-            width: 100%;
-            border: none;
-            background: transparent;
-        }
-
-        .diagram-table td {
-            border: none;
-            padding: 8px;
-            text-align: center;
-            background-color: transparent;
-            font-size: 12px;
-        }
-
-        .state-box {
-            background-color: var(--primary);
-            color: #ffffff;
-            padding: 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            min-width: 140px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
-        }
-
-        .state-box.alert {
-            background-color: var(--state-alert);
-        }
-
-        .state-box.failed {
-            background-color: var(--state-failed);
-        }
-
-        .arrow {
-            font-size: 20px;
-            color: var(--text-muted);
-            font-weight: bold;
-        }
+        .diagram-container { width: 100%; overflow-x: auto; margin: 30px 0; padding: 10px 0; }
+        .diagram-table { width: 100%; border: none; background: transparent; }
+        .diagram-table td { border: none; padding: 8px; text-align: center; background-color: transparent; font-size: 12px; }
+        .state-box { background-color: var(--primary); color: #ffffff; padding: 12px; border-radius: 6px; font-weight: bold; min-width: 140px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); }
+        .state-box.alert { background-color: var(--state-alert); }
+        .state-box.failed { background-color: var(--state-failed); }
+        .arrow { font-size: 20px; color: var(--text-muted); font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="header-banner">
-            <div class="subtitle">Documento de Especificação Técnica e Operacional de Alta Fidelidade</div>
-            <h1>Agente Inteligente de Alocação Pendle (V5.3 - Mission-Critical Deployment)</h1>
+            <div class="subtitle">Documento de Especificação Técnica e Engenharia de Software</div>
+            <h1>Agente Inteligente de Alocação Pendle (V5.4 - Production Blueprint)</h1>
         </div>
 
-        <h2>1. Objetivo do Sistema</h2>
-        <p>O objetivo primário deste sistema é monitorar, predizer e arbitrar mercados do protocolo Pendle Finance na rede Arbitrum e ambientes Cross-Chain associados. O sistema gerencia o rebalanceamento dinâmico entre Yield Tokens (YT) e Principal Tokens (PT) usando inteligência preditiva acoplada para alternar regimes operacionais, mitigando sistematicamente riscos de cauda, slippage estrutural e custos de transporte invisíveis.</p>
-
-        <h2>2. Modelo de Yield Nativos do Protocolo</h2>
-        <p>O algoritmo de monitoramento rege as suas premissas exclusivamente pela arquitetura matemática do Pendle:</p>
+        <h2>1. Objetivo do Sistema e Modos de Operação</h2>
+        <p>O objetivo primário do sistema é monitorar, predizer e arbitrar de forma autônoma os mercados do protocolo Pendle Finance. O sistema gerencia o rebalanceamento dinâmico entre Yield Tokens (YT) e Principal Tokens (PT) mitigando sistematicamente riscos de cauda e derrapagem (*slippage*).</p>
+        
+        <h3>1.1. Isolamento de Ambiente via Modo Dry-Run</h3>
+        <p>O agente possui suporte nativo para isolamento operacional configurado pela flag global <code class="math">EXECUTION_MODE</code>:</p>
         <ul>
-            <li><b>Underlying APY:</b> Média móvel ponderada de 7 dias do rendimento nativo distribuído pelo ativo de lastro.</li>
-            <li><b>Implied APY:</b> Projeção anualizada de yield futuro precificada instantaneamente pela curva da AMM do Pendle.</li>
-            <li><b>Fixed APY:</b> Taxa de retorno garantida travada ao se adquirir o Principal Token (PT), agindo de forma análoga a um título de cupom zero.</li>
-            <li><b>Yield Token (YT):</b> Ativo que concede direito integral aos fluxos de rendimento gerados pelo ativo subjacente até o vencimento.</li>
-            <li><b>Mecanismo de Claim e Expiração:</b> Os yields acumulados pelo YT devem ser reivindicados de forma ativa via chamadas ao método <code class="math">claimYield()</code>. Caso o resgate não ocorra antes da data de maturidade, todos os fluxos de caixa acumulados não reivindicados são permanentemente **zerados**, cessando os direitos contratuais do detentor.</li>
+            <li><b>LIVE:</b> Assina criptograficamente e transmite transações diretamente para a rede por meio de RPC protegido contra MEV.</li>
+            <li><b>DRY_RUN:</b> Executa todo o pipeline lógico de dados, consome o modelo quantitativo/preditivo, calcula o <code class="math">minOut</code> e monta o payload de telemetria estruturado, porém <b>intercepta e aborta</b> a operação imediatamente antes da assinatura on-chain. Útil para auditorias de risco zero.</li>
         </ul>
 
-        <h2>3. Matriz de Ativos Parametrizável e Limites Globais</h2>
-        <p>Nenhuma constante de negócio ou de mercado deve residir de forma rígida (<i>hard-coded</i>) no núcleo do agente. O sistema consome uma estrutura contextual dinâmica (<code class="math">AssetContext</code>), permitindo alteração de limiares em tempo de execução via camadas de governança:</p>
+        <h2>2. Contratos de Implementação (Spec-to-Code Mapping)</h2>
+        <p>Para eliminar ambiguidades na tradução de regras de negócio para código, o sistema obedece estritamente às seguintes interfaces e contratos de software:</p>
+
+        <h3>2.1. Interface do Agente Principal (Core Agent)</h3>
+        <pre>class PendleAllocationAgent:
+    def observe(self) -> MarketSnapshot:
+        """Coleta dados on-chain da AMM do Pendle, taxas de gás e oráculos."""
+        pass
+
+    def pre_validate(self, snapshot: MarketSnapshot, asset_ctx: AssetContext) -> PreValidationResult:
+        """Aplica filtros de TVL, Fixed APY mínimo, DaysToMaturity e limites de tese/pool."""
+        pass
+
+    def execute(self, decision: ExecutionDecision) -> ExecutionResult:
+        """Simula localmente via MEV-Shielded RPC e transmite se o Slippage Gate passar."""
+        pass
+
+    def cooldown(self, reason: str, duration: int) -> None:
+        """Aplica o estado de espera específico conforme a matriz de falhas."""
+        pass
+
+    def handle_failure(self, error: AgentError) -> None:
+        """Incrementa contador horário e avalia gatilhos de escalonamento de risco."""
+        pass</pre>
+
+        <h3>2.2. Funções do Core Quantitativo (Quant Math Engine)</h3>
+        <pre>def compute_delta_net(asset_ctx: AssetContext, market_snapshot: MarketSnapshot) -> float:
+    """Calcula o ΔNet anualizado deduzindo todos os componentes do CTEA (WAD precision)."""
+    pass
+
+def compute_dynamic_threshold(asset_ctx: AssetContext, volatility_24h: float) -> float:
+    """Aplica a fórmula: Δtarget_effective = Δtarget_base + (k * σ_24h)."""
+    pass
+
+def should_enter_yt(delta_net: float, threshold: float, breakeven_ok: bool, regime_bias: float) -> bool:
+    """Avalia se ΔNet > (threshold * regime_bias) condicionado ao YT Decay Gate."""
+    pass
+
+def should_enter_pt(delta_net: float, threshold: float, regime_bias: float) -> bool:
+    """Avalia se ΔNet &lt; -(threshold * regime_bias) condicionado ao Cutoff de maturidade."""
+    pass
+
+def should_exit_position(position_state: PositionState, market_snapshot: MarketSnapshot, asset_ctx: AssetContext) -> bool:
+    """Monitora condições de saída prematura por quebra de fundamentos ou risco."""
+    pass</pre>
+
+        <h2>3. Matriz de Ativos Parametrizável e Perfis de Risco Macro</h2>
+        <p>Nenhum parâmetro operacional é codificado de forma rígida (*hard-coded*). O sistema lê dinamicamente um dicionário de configuração adaptado de acordo com a variável global macro <code class="math">RISK_MODE</code>:</p>
 
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th>Categoria de Tese</th>
-                        <th>Tokens Exemplo</th>
-                        <th>Fixed APY Mín.</th>
-                        <th>TVL Mínimo</th>
-                        <th>Teto Máx. Alocação Global</th>
-                        <th>Justificação de Risco</th>
+                        <th>Perfil de Risco Macro</th>
+                        <th><span class="math">&Delta;<sub>target_base</sub></span></th>
+                        <th>Multiplicador k (<span class="math">&sigma;</span>)</th>
+                        <th>Teto Máx. Tese YT</th>
+                        <th>Slippage Tolerado</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><b>Stablecoins (PT)</b></td>
-                        <td>PT-apxUSD, PT-srUSDe</td>
-                        <td><span class="math">&ge; 10%</span></td>
-                        <td>$5.000.000 USD</td>
-                        <td><b>80%</b></td>
-                        <td>Maior resiliência de paridade; limitado por liquidez estrutural. Impacto Máx: 0,75%.</td>
+                        <td><b>CONSERVATIVE</b></td>
+                        <td>80 bps (0.0080)</td>
+                        <td>2.0</td>
+                        <td>&le; 20%</td>
+                        <td>Estrito (0.05%)</td>
                     </tr>
                     <tr>
-                        <td><b>LRT / LST (PT)</b></td>
-                        <td>PT-eETH, PT-rsETH</td>
-                        <td><span class="math">&ge; 8%</span></td>
-                        <td>$8.000.000 USD</td>
-                        <td><b>50%</b></td>
-                        <td>Proteção contra contágio por descolamento ou penalidades de nós (<i>slashing</i>). Impacto Máx: 1,25%.</td>
+                        <td><b>NEUTRAL (Default)</b></td>
+                        <td>50 bps (0.0050)</td>
+                        <td>1.5</td>
+                        <td>30%</td>
+                        <td>Padrão (0.10%)</td>
                     </tr>
                     <tr>
-                        <td><b>Cross-Chain</b></td>
-                        <td>Pools Externos (BNB)</td>
-                        <td><span class="math">&ge; 16%</span></td>
-                        <td>$10.000.000 USD</td>
-                        <td><b>40%</b></td>
-                        <td>Cobre custos fixos e variáveis de pontes e fricções inter-cadeias.</td>
-                    </tr>
-                    <tr>
-                        <td><b>Yield Tokens (YT Total)</b></td>
-                        <td>Qualquer YT ativo</td>
-                        <td>N/A</td>
-                        <td>$5.000.000 USD</td>
-                        <td><b>30%</b></td>
-                        <td>Proteção convexa contra o efeito do decaimento temporal acelerado do prêmio do YT.</td>
+                        <td><b>AGGRESSIVE</b></td>
+                        <td>25 bps (0.0025)</td>
+                        <td>1.0</td>
+                        <td>40%</td>
+                        <td>Flexível (0.25%)</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <p><i>Nota de Conformidade:</i> Adicionalmente aos tetos globais por tese, a alocação de capital em um <b>único pool individual</b> é rigidamente limitada ao teto de <b>70%</b> do patrimônio gerido, eliminando a exposição concentrada idiossincrática.</p>
 
-        <h2>4. Lógica de Decisão e Consistência Dimensional de Custos</h2>
-        <p>Para assegurar que o motor de decisão não autorize ordens cujas margens financeiras sejam absorvidas pelas taxas, as fricções operacionais são convertidas matematicamente para a métrica de <b>Custos Totais Equivalentes Anuais (CTEA)</b>:</p>
+        <h3>3.1. Limites de Alocação por Tese de Ativo</h3>
+        <p>Os limites abaixo restringem a exposição a teses de mercado para evitar contágios sistêmicos:</p>
+        <ul>
+            <li><b>Stablecoins (PT):</b> Máximo de 80% do portfólio global.</li>
+            <li><b>LRT / LST (PT):</b> Máximo de 50% para mitigar riscos de descolamento de derivativos de Staking (*slashing*).</li>
+            <li><b>Limite Unificado por Pool:</b> Independentemente do perfil, o teto rígido de capital exposto a um <b>único pool individual é de 70%</b>.</li>
+        </ul>
 
-        <h3>4.1. Equações Operacionais Expandidas</h3>
-        <ol>
-            <li><b>Delta de Yield Bruto (<span class="math">&Delta;<sub>Yield</sub></span>):</b>
-                <div style="text-align:center; margin: 5px 0;"><span class="math">&Delta;<sub>Yield</sub> = Underlying APY<sub>7d</sub> &minus; Implied APY</span></div>
-            </li>
-            <li><b>Delta Ajustado ao Tempo (<span class="math">&Delta;<sub>Time</sub></span>):</b> Onde <span class="math">t<sub>maturidade</sub> = DaysToMaturity / 365</span>.
-                <div style="text-align:center; margin: 5px 0;"><span class="math">&Delta;<sub>Time</sub> = &Delta;<sub>Yield</sub> &times; t<sub>maturidade</sub></span></div>
-            </li>
-            <li><b>Custos Totais Equivalentes Anuais (CTEA):</b>
-                <div style="text-align:center; margin: 5px 0;"><span class="math">CTEA = (Gas<sub>%</sub> + Bridge<sub>%</sub> + Slippage<sub>In</sub> + Slippage<sub>Out</sub>) / t<sub>maturidade</sub></span></div>
-            </li>
-            <li><b>Delta Líquido Operacional Final (<span class="math">&Delta;<sub>Net</sub></span>):</b>
-                <div style="text-align:center; margin: 5px 0;"><span class="math">&Delta;<sub>Net</sub> = &Delta;<sub>Time</sub> &minus; CTEA &minus; RiscoSaída<sub>%</sub></span></div>
-            </li>
-        </ol>
-
-        <h3>4.2. Formalização Matemática da Zona de Inércia Dinâmica (<span class="math">&Delta;<sub>target_effective</sub></span>)</h3>
-        <p>Para mitigar sinais falsos (*whipsawing*) em cenários de alta volatilidade, o limiar efetivo de trade expande e contrai de acordo com o desvio padrão amostral das últimas 24 horas:</p>
+        <h2>4. Lógica Quantitativa de Decisão</h2>
+        <p>Todas as fricções de taxas, pontes cross-chain e slippages são unificadas dimensionalmente na métrica de <b>Custos Totais Equivalentes Anuais (CTEA)</b> utilizando aritmética de precisão estendida (WAD):</p>
+        
         <div class="math-block">
             <span class="math">&Delta;<sub>target_effective</sub> = &Delta;<sub>target_base</sub> + (k &times; &sigma;<sub>&Delta;<sub>Net</sub>, 24h</sub>)</span>
         </div>
-        <p>Onde <span class="math">&Delta;<sub>target_base</sub></span> representa o spread mínimo estrutural (default: 50 bps ou 0.005) e <span class="math">k</span> é o coeficiente multiplicador de sensibilidade ao risco (default: 1.5).</p>
+
         <ul>
-            <li><b>Ação YT:</b> Ativada se <span class="math">&Delta;<sub>Net</sub> &gt; &Delta;<sub>target_effective</sub></span>.</li>
-            <li><b>Ação PT:</b> Ativada se <span class="math">&Delta;<sub>Net</sub> &lt; &minus;&Delta;<sub>target_effective</sub></span>.</li>
-            <li><b>No-Op (Hold):</b> Mantido estritamente se <span class="math">|&Delta;<sub>Net</sub>| &le; &Delta;<sub>target_effective</sub></span>.</li>
+            <li><b>Sinal de Compra YT:</b> <span class="math">&Delta;<sub>Net</sub> &gt; &Delta;<sub>target_effective</sub> &times; Bias</span></li>
+            <li><b>Sinal de Compra PT:</b> <span class="math">&Delta;<sub>Net</sub> &lt; &minus;&Delta;<sub>target_effective</sub> &times; Bias</span></li>
+            <li><b>Zona de Inércia (No-Op):</b> Ocorre quando o spread não rompe as bandas dinâmicas. O robô bloqueia execuções para evitar queima inflacionária de gás por overtrading.</li>
         </ul>
 
         <div class="callout-warn">
-            <div class="callout-title">4.3. Alinhamento Dimensional do Breakeven para YT (YT Decay Gate)</div>
-            <p>Para evitar a entrada em posições de YT incapazes de gerar retorno real antes de expirarem, o cálculo do ponto de equilíbrio em dias (<span class="math">Breakeven<sub>Days</sub></span>) adota normalização decimal estendida e base temporal unificada (WAD / 18 casas decimais):</p>
+            <div class="callout-title">4.1. Alinhamento Dimensional do Breakeven (YT Decay Gate)</div>
+            <p>Para evitar a perda total do prêmio pago por Yield Tokens próximos ao vencimento, o agente calcula o ponto de equilíbrio de dias baseado no retorno diário real sobre o principal:</p>
             <div style="text-align:center; margin: 8px 0;"><span class="math">Breakeven<sub>Days</sub> = Preço\_YT / (Underlying\_APY<sub>7d</sub> / 365)</span></div>
-            <p>Se <span class="math">Breakeven<sub>Days</sub> &gt; DaysToMaturity</span>, a execução é **abortada imediatamente**, bloqueando a queima de prêmio pelo decaimento temporal.</p>
+            <p>Se <span class="math">Breakeven<sub>Days</sub> &gt; DaysToMaturity</span>, a operação é **vetada e abortada**, emitindo a flag de erro <code class="math">BREAKEVEN_VIOLATION</code>.</p>
         </div>
 
-        <div class="callout-warn">
-            <div class="callout-title">4.4. Filtro de Salvaguarda Temporal: Janelas Parametrizadas e PDS</div>
-            <p>Próximo ao vencimento, os tokens sofrem severa perda de liquidez. O sistema adota a janela de corte padrão de <b>7 dias</b> como parâmetro dinâmico (<code class="math">DAYS_TO_MATURITY_CUTOFF</code>). Se <span class="math">DaysToMaturity &lt; Cutoff</span>, novas operações em PT entram em bloqueio total de salvaguarda (<code class="math">POOL_EXPIRING_SOON</code>).</p>
-        </div>
-
-        <h2>5. Engenharia Preditiva: Camada Inteligente e Fallback Determinístico</h2>
-        <p>O módulo preditivo baseado em Machine Learning atua estritamente como um modificador de viés (*bias multiplier*) sobre as regras matemáticas determinísticas, prevenindo falhas catastróficas por sobreajuste (*overfitting*).</p>
-
-        <h3>5.1. Mecanismo de Circuit Breaker de Confiança</h3>
-        <p>Se a certeza do classificador estiver abaixo do limiar de segurança configurado de <b>65%</b> (<code class="math">PREDICTOR_CONFIDENCE_THRESHOLD = 0.65</code>), o módulo preditivo sofre bypass automático. O robô ignora a recomendação da inteligência e opera sob o <b>Modo de Fallback Puramente Determinístico</b> baseado em regras.</p>
-
-        <h3>5.2. Interação com a Lógica de Decisão</h3>
-        <ul>
-            <li><b>Regime <code class="math">HIGH_YIELD</code> (Bullish):</b> Reduz o spread exigido aplicando um multiplicador de deságio na inércia (<span class="math">&Delta;<sub>target_effective</sub> = &Delta;<sub>target_effective</sub> &times; 0.85</span>), facilitando a rotação rumo ao YT.</li>
-            <li><b>Regime <code class="math">LOW_YIELD</code> (Bearish):</b> Alarga o spread exigido (<span class="math">&Delta;<sub>target_effective</sub> = &Delta;<sub>target_effective</sub> &times; 1.25</span>), inibindo aquisições de YT e direcionando a preferência para a imunização estável do PT.</li>
-        </ul>
-
-        <h3>5.3. Código Fonte de Produção do Módulo Preditivo</h3>
-        <pre># market_regime_predictor.py
-import numpy as np
-import pandas as pd
-from sklearn.cluster import KMeans
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score
-from typing import Dict
-
-class PendleMarketRegimePredictor:
-    def __init__(self, n_regimes: int = 3, lookback_days: int = 30):
-        self.n_regimes = n_regimes
-        self.lookback = lookback_days
-        self.kmeans = KMeans(n_clusters=n_regimes, random_state=42)
-        self.classifier = RandomForestClassifier(
-            n_estimators=200, max_depth=10, min_samples_split=5, random_state=42
-        )
-        self.scaler = StandardScaler()
-        self.regime_labels = {0: "HIGH_YIELD", 1: "STABLE", 2: "LOW_YIELD"}
-
-    def _extract_regime_features(self, df: pd.DataFrame) -> pd.DataFrame:
-        features = pd.DataFrame(index=df.index)
-        for window in [7, 14, 30]:
-            features[f'apy_ma_{window}d'] = df['underlying_apy'].rolling(window).mean()
-            features[f'apy_std_{window}d'] = df['underlying_apy'].rolling(window).std()
-            features[f'tvl_ma_{window}d'] = df['tvl_usd'].rolling(window).mean()
-        for period in [3, 7]:
-            features[f'apy_momentum_{period}d'] = df['underlying_apy'].pct_change(period)
-            features[f'spread_momentum_{period}d'] = (df['underlying_apy'] - df['implied_apy']).pct_change(period)
+        <h2>5. Cenários de Teste Obrigatórios (Test Cases Conceituais)</h2>
+        <p>A suite de testes automatizados do sistema deve validar obrigatoriamente os seguintes comportamentos determinísticos:</p>
         
-        features['apy_spread'] = df['underlying_apy'] - df['implied_apy']
-        features['spread_ma_7d'] = features['apy_spread'].rolling(7).mean()
-        features['spread_zscore'] = (features['apy_spread'] - features['apy_spread'].rolling(30).mean()) / features['apy_spread'].rolling(30).std()
-        features['implied_lag'] = df['implied_apy'].shift(1) - df['implied_apy']
-        features['convergence_rate'] = -features['implied_lag'] / (features['apy_spread'] + 0.001)
-        features['tvl_growth_7d'] = df['tvl_usd'].pct_change(7)
-        features['tvl_volatility'] = df['tvl_usd'].rolling(14).std() / df['tvl_usd'].rolling(14).mean()
-        features['days_to_maturity'] = df['days_to_maturity']
-        features['maturity_proximity'] = 1 / (features['days_to_maturity'] + 1)
-        return features.dropna()
-
-    def _label_regimes(self, df: pd.DataFrame, features: pd.DataFrame) -> pd.Series:
-        clustering_features = features[['apy_ma_14d', 'apy_std_14d', 'spread_ma_7d', 'tvl_growth_7d', 'convergence_rate']]
-        scaled = self.scaler.fit_transform(clustering_features)
-        regimes = self.kmeans.fit_predict(scaled)
-        regime_means = [features.loc[regimes == r, 'apy_ma_14d'].mean() for r in range(self.n_regimes)]
-        order = np.argsort(regime_means)[::-1]
-        regime_mapping = {old: new for new, old in enumerate(order)}
-        return pd.Series(np.array([regime_mapping[r] for r in regimes]), index=features.index)
-
-    def fit(self, historical_data: pd.DataFrame):
-        features = self._extract_regime_features(historical_data)
-        self.regime_labels_historical = self._label_regimes(historical_data, features)
-        X, y = [], []
-        for i in range(len(features) - 7):
-            X.append(features.iloc[i].values)
-            y.append(self.regime_labels_historical.iloc[i + 7])
-        self.classifier.fit(np.array(X), np.array(y))
-        return accuracy_score(np.array(y), self.classifier.predict(np.array(X)))
-
-    def predict_regime(self, recent_data: pd.DataFrame, horizon_days: int = 7) -> Dict:
-        features = self._extract_regime_features(recent_data)
-        if len(features) == 0:
-            return {'predicted_regime': 'UNKNOWN', 'confidence': 0.0, 'action': {'type': 'HOLD', 'multiplier': 1.0}}
-        latest_features = features.iloc[-1:].values
-        regime_id = self.classifier.predict(latest_features)[0]
-        regime_probs = self.classifier.predict_proba(latest_features)[0]
-        confidence = float(np.max(regime_probs))
-        
-        actions = {
-            0: {'type': 'ROTATE_TO_YT', 'multiplier': 0.85},
-            1: {'type': 'MAINTAIN_PT', 'multiplier': 1.0},
-            2: {'type': 'SEEK_OPPORTUNITIES', 'multiplier': 1.25}
-        }
-        return {
-            'predicted_regime': self.regime_labels[regime_id],
-            'confidence': confidence,
-            'regime_probabilities': {"HIGH_YIELD": regime_probs[0], "STABLE": regime_probs[1], "LOW_YIELD": regime_probs[2]},
-            'action': actions[regime_id]
-        }</pre>
-
-        <h2>6. Infraestrutura de Proteção, Matriz de Cooldown e Circuit Breaker Global</h2>
-        <p>Para mitigar falhas sequenciais decorrentes de instabilidades temporárias de rede ou do nó de RPC, o agente calcula dinamicamente o parâmetro <code class="math">minOut</code> com buffers de volatilidade coletados dos últimos 10 blocos na blockchain, aplicando uma matriz estrita de cooldown por categoria de erro:</p>
-
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th>Identificador do Erro</th>
-                        <th>Causa Raiz Comum</th>
-                        <th>Janela Isolada (Cooldown)</th>
-                        <th>Ação de Tratamento Corretivo</th>
+                        <th>Caso de Teste</th>
+                        <th>Condições de Entrada (Inputs)</th>
+                        <th>Comportamento Esperado</th>
+                        <th>Flag / Código de Log</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><code class="math">SLIPPAGE_VIOLATION</code></td>
-                        <td>Volatilidade repentina na AMM do Pendle</td>
-                        <td>45 Segundos</td>
-                        <td>Recalcula <code class="math">volatility_bps</code> e o buffer do roteador.</td>
+                        <td><b>A: YT Atrativo</b></td>
+                        <td>Underlying APY &gt;&gt; Implied APY; CTEA baixo; Breakeven em conformidade.</td>
+                        <td>Aprova entrada e executa ordens para Yield Token.</td>
+                        <td><code class="math">ROTATE_TO_YT</code></td>
                     </tr>
                     <tr>
-                        <td><code class="math">RPC_NODE_TIMEOUT</code></td>
-                        <td>Latência excessiva do provedor de infraestrutura</td>
-                        <td>180 Segundos</td>
-                        <td>Efetua failover para nó alternativo da rede.</td>
+                        <td><b>B: PT Atrativo</b></td>
+                        <td>Implied APY elevado (mercado superprecificando yield); &Delta;Net fortemente negativo.</td>
+                        <td>Trava a taxa fixa adquirindo Principal Token.</td>
+                        <td><code class="math">ROTATE_TO_PT</code></td>
                     </tr>
                     <tr>
-                        <td><code class="math">INSUFFICIENT_LIQUIDITY</code></td>
-                        <td>Tamanho do lote superior à profundidade do pool</td>
-                        <td>900 Segundos</td>
-                        <td>Fraciona a ordem de tamanho ou aborta execução.</td>
+                        <td><b>C: Zona de Inércia</b></td>
+                        <td>&Delta;Net próximo de zero; volatilidade 24h alta alargando as bandas efetivas.</td>
+                        <td>Bloqueia novas transações; mantém posição atual inalterada.</td>
+                        <td><code class="math">HOLD_NO_OP</code></td>
                     </tr>
                     <tr>
-                        <td><code class="math">ORACLE_DISCREPANCY</code></td>
-                        <td>Desvio severo entre preço de tela e oráculo local</td>
-                        <td>3600 Segundos</td>
-                        <td>Gela o mercado e aciona alarmes de verificação.</td>
+                        <td><b>D: Violação de Decay</b></td>
+                        <td>Spread bruto atrativo, porém Breakeven Days superior ao prazo de vencimento.</td>
+                        <td>Veta a compra do YT para proteger o prêmio de capital.</td>
+                        <td><code class="math">BREAKEVEN_VIOLATION</code></td>
+                    </tr>
+                    <tr>
+                        <td><b>E: Disparo de Failsafe</b></td>
+                        <td>Mais de 5 falhas operacionais registradas no intervalo de 60 minutos.</td>
+                        <td>Ativa travamento de escrita; bloqueia novas assinaturas criptográficas.</td>
+                        <td><code class="math">CRITICAL_HALT</code></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <div class="callout-warn">
-            <div class="callout-title">6.1. Circuit Breaker Global de Infraestrutura (Anti-Gas-Draining)</div>
-            <p>O sistema mantém um rastreador horário cumulativo (<code class="math">hourly_failure_count</code>). Caso ocorram mais do que <b>5 falhas consecutivas dentro de uma janela deslizante de 60 minutos</b>, o robô entra em estado <code class="math">CRITICAL_HALT</code>: todas as operações automatizadas de escrita em carteira são paralisadas por completo e um alerta de emergência é disparado para intervenção manual imediata via canais de monitoramento (PagerDuty / Webhooks).</p>
-        </div>
+        <h2>6. Camada Inteligente, Fallback e Salvaguardas</h2>
+        <p>O classificador baseado em Inteligência Artificial atua estritamente como um modificador de viés das equações matemáticas. Caso a confiança retornada pelo modelo seja inferior ao limiar rígido de <b>65%</b> (<code class="math">PREDICTOR_CONFIDENCE_THRESHOLD = 0.65</code>), o motor ativa o <b>Fallback Determinístico</b>, ignorando as recomendações do classificador.</p>
 
-        <h2>7. Payload Completo de Auditoria, Telemetria e Pós-Trade (Schema V5.3)</h2>
-        <p>Toda decisão gera obrigatoriamente um log estruturado, agora incluindo o rastreio do modelo inteligente e as justificativas estritas da estratégia para auditoria:</p>
+        <h2>7. Infraestrutura, Matriz de Cooldown e Protocolo de Autocura</h2>
+        <p>Erros operacionais disparam tempos de descanso específicos (<code class="math">SLIPPAGE_VIOLATION: 45s</code>, <code class="math">RPC_NODE_TIMEOUT: 180s</code>). O estouro de falhas joga o sistema no estado crítico.</p>
+        
+        <h3>7.1. Protocolo de Saída de CRITICAL_HALT</h3>
+        <p>Uma vez em travamento, o robô interrompe assinaturas e envios de transação on-chain, mas <b>continua executando as rotinas de Observação e Pré-validação de forma passiva</b> para telemetria. A liberação do travamento se dá exclusivamente por:</p>
+        <ol>
+            <li><b>Intervenção Manual Autenticada:</b> Assinatura criptográfica do operador ou comando via painel de administração seguro.</li>
+            <li><b>Autocura Automatizada Cumulativa:</b> Restauração autônoma autorizada apenas se o agente registrar: janela mínima de 4 horas em halt transcorrida, zeragem do contador horário de falhas e sucesso nos testes de integridade do nó RPC por 30 blocos seguidos.</li>
+        </ol>
+
+        <h2>8. Telemetria, Retenção de Séries Temporais e Reprodutibilidade</h2>
+        <p>Todos os payloads emitidos são estruturados em JSON e devem ser persistidos em um banco de dados de séries temporais (ex: ClickHouse, TimescaleDB) com <b>retenção mínima de 12 a 24 meses</b> para fins de auditoria regulatória e tuning de modelos. O identificador único <code class="math">replay_id</code> permite a reconstituição precisa de todo o contexto operacional e parâmetros de mercado do bloco correspondente.</p>
+
+        <h2>9. Payload Atualizado de Telemetria (Schema V5.4)</h2>
         <pre>{
   "timestamp": 1780481000,
-  "replay_id": "arb-pendle-v5.3.1-production",
-  "chain": "arbitrum",
-  "market_id": "0x4b32bc71df119833a1e12e31828f7312365c1928",
-  "provider": "drpc_mev_protected_node",
+  "replay_id": "arb-pendle-v5.4.0-production",
+  "execution_mode": "DRY_RUN",
+  "risk_profile": "CONSERVATIVE",
   "strategy_intent": {
     "regime_label": "HIGH_YIELD",
     "model_confidence": 0.74,
     "fallback_active": false,
     "entry_reason": "SPREAD_NET_EXCEEDS_DYNAMIC_TARGET_BULLISH_BIAS",
-    "exit_reason": "NONE"
+    "exit_reason": "NONE",
+    "validation_gate_logs": "YT_DECAY_GATE_PASSED__BREAKEVEN_OK"
   },
   "metrics": {
     "fixed_apy": 12.45,
@@ -524,28 +296,16 @@ class PendleMarketRegimePredictor:
     "days_to_maturity": 22.15
   },
   "execution_engine": {
-    "current_state": "EXECUÇÃO_ATIVA",
+    "current_state": "OBSERVING_PASSIVE",
     "delta_net_calculated": 2.15,
-    "delta_target_effective": 0.0063,
-    "action_recommended": "ROTATE_TO_YT",
-    "min_out_calculated": 0.9945,
-    "volatility_buffer_bps": 12,
-    "total_buffer_bps": 17,
-    "pendle_router_passed_value_wad": "994500000000000000"
-  },
-  "post_execution": {
-    "simulated_slippage_bps": 15,
-    "executed_slippage_bps": 16,
-    "deviation_bps": 1,
-    "slippage_gate_triggered": false,
-    "provider_latency_ms": 145,
-    "block_drift_simulated_to_executed": 2,
-    "latency_grade": "GOOD"
+    "delta_target_effective": 0.0095,
+    "action_recommended": "ROTATE_TO_YT_SIMULATED",
+    "min_out_calculated": 0.9945
   },
   "infrastructure_health": {
     "hourly_failure_count": 0,
-    "current_cooldown_seconds": 0,
-    "active_cooldown_reason": "NONE"
+    "current_state_machinery": "HALT_RECOVERY_PENDING",
+    "active_cooldown_reason": "PREVIOUS_RPC_TIMEOUT_AUTO_RESOLVING"
   }
 }</pre>
     </div>
