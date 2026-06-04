@@ -3,475 +3,558 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agente Pendle V5.5.1 — PT Only | DollarUp</title>
+<title>Agente Pendle V5.5.1 — Multi-Market | DollarUp</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
   :root {
-    --bg:#0a0e14;--surface:#0f1520;--surface2:#151e2d;--border:#1e2d42;
-    --accent:#00d4aa;--accent2:#3b82f6;--accent3:#f59e0b;--danger:#ef4444;
-    --text:#e2e8f0;--muted:#64748b;
-    --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+    --bg: #09090b; --bg2: #111113; --bg3: #18181b;
+    --border: #27272a; --border2: #3f3f46;
+    --amber: #f59e0b; --amber2: #fbbf24; --amber-dim: #78350f;
+    --green: #10b981; --green-dim: #064e3b;
+    --blue: #3b82f6; --blue-dim: #1e3a5f;
+    --purple: #8b5cf6; --purple-dim: #3b1f6e;
+    --red: #ef4444; --muted: #71717a; --text: #e4e4e7;
+    --mono: 'Space Mono', monospace; --sans: 'Inter', sans-serif;
   }
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:14px;line-height:1.7;min-height:100vh}
-  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,170,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
-  .wrapper{position:relative;z-index:1;max-width:1020px;margin:0 auto;padding:60px 24px 120px}
-  .header{border-bottom:1px solid var(--border);padding-bottom:40px;margin-bottom:60px}
-  .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);color:var(--accent);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:6px 14px;border-radius:4px;margin-bottom:24px}
-  .badge::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-  h1{font-family:var(--sans);font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:16px;background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .subtitle{color:var(--muted);font-size:13px;letter-spacing:.05em}
-  .meta-row{display:flex;gap:24px;flex-wrap:wrap;margin-top:24px}
-  .meta-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
-  .meta-item span{color:var(--accent);font-weight:600}
-  .section{margin-bottom:52px}
-  .section-label{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-  .section-num{font-size:11px;font-weight:700;color:var(--accent);background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);padding:3px 8px;border-radius:3px;letter-spacing:.05em}
-  h2{font-family:var(--sans);font-size:18px;font-weight:700;color:#fff;letter-spacing:-.01em}
-  h3{font-family:var(--sans);font-size:14px;font-weight:600;color:var(--accent2);margin-bottom:12px;margin-top:24px;letter-spacing:.02em}
-  h4{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;margin-top:16px;text-transform:uppercase;letter-spacing:.08em}
-  p{color:#94a3b8;margin-bottom:12px;line-height:1.8}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:16px;position:relative;overflow:hidden}
-  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent)}
-  .card.blue::before{background:linear-gradient(90deg,var(--accent2),transparent)}
-  .card.yellow::before{background:linear-gradient(90deg,var(--accent3),transparent)}
-  .card.red::before{background:linear-gradient(90deg,var(--danger),transparent)}
-  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:16px}
-  table{width:100%;border-collapse:collapse;font-size:12px}
-  th{background:var(--surface2);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:10px;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border)}
-  td{padding:10px 16px;border-bottom:1px solid rgba(30,45,66,.5);color:#94a3b8;vertical-align:top}
-  tr:last-child td{border-bottom:none}
-  td:first-child{color:var(--text);font-weight:500}
-  td code,th code{background:rgba(0,212,170,.08);color:var(--accent);padding:1px 6px;border-radius:3px;font-size:11px}
-  pre{background:#060a10;border:1px solid var(--border);border-radius:6px;padding:20px;overflow-x:auto;margin-bottom:16px;position:relative}
-  pre code{font-family:var(--mono);font-size:12px;color:#a8b4c8;line-height:1.8}
-  .formula{background:rgba(0,212,170,.04);border:1px solid rgba(0,212,170,.15);border-left:3px solid var(--accent);border-radius:4px;padding:16px 20px;margin:16px 0;font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.02em;line-height:2}
-  .pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.05em;margin:2px}
-  .pg{background:rgba(0,212,170,.12);color:var(--accent);border:1px solid rgba(0,212,170,.25)}
-  .pb{background:rgba(59,130,246,.12);color:var(--accent2);border:1px solid rgba(59,130,246,.25)}
-  .py{background:rgba(245,158,11,.12);color:var(--accent3);border:1px solid rgba(245,158,11,.25)}
-  .pr{background:rgba(239,68,68,.12);color:var(--danger);border:1px solid rgba(239,68,68,.25)}
-  .warning{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-left:3px solid var(--danger);border-radius:4px;padding:14px 18px;margin:16px 0;font-size:12px;color:#fca5a5;display:flex;gap:10px;align-items:flex-start}
-  .warning::before{content:'⚠';flex-shrink:0}
-  .info{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-left:3px solid var(--accent2);border-radius:4px;padding:14px 18px;margin:16px 0;font-size:12px;color:#93c5fd;display:flex;gap:10px;align-items:flex-start}
-  .info::before{content:'ℹ';flex-shrink:0}
-  .status-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:16px}
-  .sc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px}
-  .sc-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
-  .sc-value{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--accent)}
-  .sc-sub{font-size:11px;color:var(--muted);margin-top:4px}
-  .arch{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:28px;font-family:var(--mono);font-size:12px;line-height:2.2}
-  .kw{color:#c792ea}.fn{color:#82aaff}.str{color:#c3e88d}.num{color:#f78c6c}.cm{color:#546e7a;font-style:italic}.ac{color:var(--accent);font-weight:600}.ac2{color:var(--accent2)}.ac3{color:var(--accent3)}
-  .footer{border-top:1px solid var(--border);padding-top:32px;margin-top:80px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
-  .footer-brand{font-family:var(--sans);font-weight:700;font-size:16px;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .footer-meta{font-size:11px;color:var(--muted)}
-  hr{border:none;border-top:1px solid var(--border);margin:28px 0}
-  ul{list-style:none;padding:0}
-  ul li{padding:4px 0 4px 16px;color:#94a3b8;position:relative;font-size:13px}
-  ul li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:11px}
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media(max-width:640px){.two-col{grid-template-columns:1fr}}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.7; }
+  
+  .grid-bg {
+    position: fixed; inset: 0; z-index: 0;
+    background-image: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* Header */
+  .header { border-bottom: 1px solid var(--border); padding-bottom: 32px; margin-bottom: 48px; }
+  .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .hex { width: 36px; height: 36px; background: var(--amber); clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-weight: 700; font-size: 13px; color: #000; }
+  .brand-text { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .brand-text strong { color: var(--amber); }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 8px; }
+  h1 span { color: var(--amber); }
+  .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+  .meta-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill { padding: 3px 10px; border-radius: 999px; font-family: var(--mono); font-size: 10px; border: 1px solid; }
+  .pill-amber { border-color: var(--amber-dim); color: var(--amber); background: rgba(245,158,11,.06); }
+  .pill-green { border-color: var(--green-dim); color: var(--green); background: rgba(16,185,129,.06); }
+  .pill-blue { border-color: var(--blue-dim); color: var(--blue); background: rgba(59,130,246,.06); }
+  .pill-purple { border-color: var(--purple-dim); color: var(--purple); background: rgba(139,92,246,.06); }
+  .pill-red { border-color: #7f1d1d; color: var(--red); background: rgba(239,68,68,.06); }
+
+  /* Status strip */
+  .status-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 48px; }
+  .stat { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; font-family: var(--mono); }
+  .stat-val { font-family: var(--mono); font-size: 20px; font-weight: 700; }
+  .stat-sub { font-size: 10px; color: var(--muted); margin-top: 4px; font-family: var(--mono); }
+
+  /* Sections */
+  .section { margin-bottom: 48px; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .section-num { font-family: var(--mono); font-size: 10px; color: var(--amber); border: 1px solid var(--amber-dim); border-radius: 4px; padding: 2px 7px; }
+  h2 { font-size: 16px; font-weight: 600; }
+  h3 { font-size: 13px; font-weight: 600; color: var(--text); margin: 20px 0 10px; }
+  p { color: var(--muted); margin-bottom: 12px; font-size: 13px; }
+  
+  /* Tables */
+  .tbl-wrap { overflow-x: auto; margin: 16px 0; border-radius: 8px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--bg3); padding: 8px 12px; text-align: left; font-size: 9px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-family: var(--mono); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 9px 12px; border-bottom: 1px solid rgba(39,39,42,.5); font-family: var(--mono); font-size: 11px; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(245,158,11,.02); }
+  .td-green { color: var(--green); } .td-amber { color: var(--amber); } .td-blue { color: var(--blue); } .td-muted { color: var(--muted); } .td-red { color: var(--red); }
+
+  /* Code blocks */
+  pre { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; font-family: var(--mono); font-size: 11px; line-height: 1.6; color: #a1a1aa; margin: 12px 0; }
+  code { font-family: var(--mono); font-size: 11px; background: var(--bg3); padding: 1px 5px; border-radius: 3px; color: var(--amber); }
+
+  /* Badges */
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 3px; font-size: 9px; font-weight: 700; font-family: var(--mono); letter-spacing: .04em; }
+  .b-done { background: rgba(16,185,129,.1); color: var(--green); border: 1px solid var(--green-dim); }
+  .b-pend { background: rgba(245,158,11,.1); color: var(--amber); border: 1px solid var(--amber-dim); }
+  .b-urg { background: rgba(239,68,68,.1); color: var(--red); border: 1px solid #7f1d1d; }
+  .b-new { background: rgba(59,130,246,.1); color: var(--blue); border: 1px solid var(--blue-dim); }
+
+  /* Callout boxes */
+  .callout { border-left: 3px solid var(--amber); background: rgba(245,158,11,.04); border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 16px 0; font-size: 12px; color: var(--muted); }
+  .callout strong { color: var(--amber); }
+  .callout-green { border-left-color: var(--green); background: rgba(16,185,129,.04); }
+  .callout-green strong { color: var(--green); }
+  .callout-red { border-left-color: var(--red); background: rgba(239,68,68,.04); }
+  .callout-red strong { color: var(--red); }
+
+  /* Markets grid */
+  .mkt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; margin: 16px 0; }
+  .mkt-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .mkt-name { font-weight: 700; font-size: 13px; margin-bottom: 10px; }
+  .mkt-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
+  .mkt-key { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-family: var(--mono); }
+  .mkt-val { font-size: 11px; font-family: var(--mono); }
+  .mkt-status { display: inline-flex; padding: 1px 7px; border-radius: 3px; font-size: 9px; font-weight: 700; font-family: var(--mono); }
+  .s-active { background: rgba(16,185,129,.1); color: var(--green); border: 1px solid var(--green-dim); }
+  .s-gate { background: rgba(245,158,11,.1); color: var(--amber); border: 1px solid var(--amber-dim); }
+  .s-blocked { background: rgba(239,68,68,.1); color: var(--red); border: 1px solid #7f1d1d; }
+
+  /* Architecture diagram */
+  .arch { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 16px 0; font-family: var(--mono); font-size: 11px; color: var(--muted); line-height: 1.8; }
+  .arch .hl { color: var(--amber); }
+  .arch .hl2 { color: var(--green); }
+  .arch .hl3 { color: var(--blue); }
+
+  /* Schedule grid */
+  .sched-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 16px 0; }
+  .sched-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .sched-label { font-size: 9px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; }
+  .sched-val { font-family: var(--mono); font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .sched-sub { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+
+  /* Decision flow */
+  .flow { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+  .flow-step { display: flex; gap: 12px; align-items: flex-start; }
+  .flow-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .flow-content { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .flow-content strong { color: var(--text); }
+
+  /* Footer */
+  .footer { border-top: 1px solid var(--border); padding-top: 24px; margin-top: 48px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-left { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .footer-right { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+
+  @media(max-width:600px) {
+    .status-strip { grid-template-columns: repeat(2,1fr); }
+    .sched-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
-<div class="wrapper">
+<div class="grid-bg"></div>
+<div class="wrap">
 
-<!-- HEADER -->
+<!-- Header -->
 <div class="header">
-  <div class="badge">DollarUp · Pendle Agent · V5.5.1 PT-Only Production</div>
-  <h1>Agente Inteligente de Alocação Pendle</h1>
-  <p class="subtitle">Especificação Técnica e Blueprint de Engenharia — PT Only (sem YT)</p>
-  <div class="meta-row">
-    <div class="meta-item">Versão <span>5.5.1-pt-only</span></div>
-    <div class="meta-item">Rede <span>Arbitrum One</span></div>
-    <div class="meta-item">Modo padrão <span>DRY_RUN</span></div>
-    <div class="meta-item">Safe <span>0xBD20...ecE3</span></div>
-    <div class="meta-item">Atualizado <span>Jun 2026</span></div>
+  <div class="brand">
+    <div class="hex">P</div>
+    <div>
+      <div style="font-family:var(--mono);font-size:13px;font-weight:700"><span style="color:var(--amber)">Pendle</span> Agent</div>
+      <div class="brand-text"><strong>DollarUp</strong> · Arbitrum One · Confidencial</div>
+    </div>
+  </div>
+  <h1>Agente Inteligente de <span>Alocação Pendle</span></h1>
+  <p class="subtitle">Especificação Técnica e Blueprint de Engenharia — Multi-Market PT Only</p>
+  <div class="meta-pills">
+    <span class="pill pill-amber">V5.5.1-multimarket</span>
+    <span class="pill pill-green">Arbitrum One</span>
+    <span class="pill pill-blue">DRY_RUN padrão</span>
+    <span class="pill pill-purple">Safe 0xBD20...ecE3</span>
+    <span class="pill pill-amber">Atualizado Jun 2026</span>
   </div>
 </div>
 
-<!-- DECISÃO PT ONLY -->
-<div class="section">
-  <div class="section-label"><div class="section-num">00</div><h2>Decisão Estratégica: PT Only</h2></div>
-  <div class="card">
-    <p>Escopo restrito a <strong style="color:var(--accent)">Principal Tokens (PT)</strong> — yield fixo garantido até maturidade. YT excluído para capital de usuários por incompatibilidade com a proposta DollarUp de "rendimento passivo sem risco de perda do principal".</p>
-    <div class="info">YT pode ser considerado futuramente apenas para treasury própria da DollarUp (fees acumulados), nunca para capital de usuários.</div>
+<!-- Status strip -->
+<div class="status-strip">
+  <div class="stat">
+    <div class="stat-label">AUM Monitorado</div>
+    <div class="stat-val" style="color:var(--amber)">$143</div>
+    <div class="stat-sub">Safe · Arbitrum</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Mercados PT Ativos</div>
+    <div class="stat-val" style="color:var(--blue)">5</div>
+    <div class="stat-sub">2 operacionais agora</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Fixed APY Médio</div>
+    <div class="stat-val" style="color:var(--green)">8.6%</div>
+    <div class="stat-sub">melhor: 9.71%</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Regime (Claude)</div>
+    <div class="stat-val" style="color:var(--green);font-size:14px;margin-top:4px">HIGH_YIELD</div>
+    <div class="stat-sub">conf=0.85 | bias=1.1</div>
   </div>
 </div>
 
-<!-- 1. OBJETIVO E MODOS -->
+<!-- 00 Decisão Estratégica -->
 <div class="section">
-  <div class="section-label"><div class="section-num">01</div><h2>Objetivo do Sistema e Modos de Operação</h2></div>
-  <p>O objetivo primário é monitorar, classificar e rebalancear de forma autônoma alocações em PT do protocolo Pendle Finance na Arbitrum, mitigando sistematicamente riscos de cauda, slippage e deterioração de liquidez.</p>
-
-  <h3>1.1 Isolamento de Ambiente via Modo Dry-Run</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>EXECUTION_MODE</th><th>Comportamento</th></tr></thead>
-      <tbody>
-        <tr><td><code>LIVE</code></td><td>Assina criptograficamente e transmite TXs via safe_executor → Safe multisig 1-de-3. Telemetria gravada ANTES da TX (atomicidade).</td></tr>
-        <tr><td><code>DRY_RUN</code></td><td>Interrompe obrigatoriamente antes de assinar ou enviar. Ações sufixadas com <code>*_SIMULATED</code>. Simula impactos no portfólio para auditoria. <strong>Default.</strong></td></tr>
-      </tbody>
-    </table>
+  <div class="section-header">
+    <span class="section-num">00</span>
+    <h2>Decisão Estratégica: PT Only, Multi-Market</h2>
   </div>
-
-  <h3>1.2 Status Atual</h3>
-  <div class="status-grid">
-    <div class="sc"><div class="sc-label">AUM Monitorado</div><div class="sc-value">$423</div><div class="sc-sub">Safe 0xBD20...ecE3</div></div>
-    <div class="sc"><div class="sc-label">Posição PT</div><div class="sc-value">$280</div><div class="sc-sub">290.28 PT-sUSDai-OCT2026</div></div>
-    <div class="sc"><div class="sc-label">Fixed APY</div><div class="sc-value">9.71%</div><div class="sc-sub">Implied: 6.61%</div></div>
-    <div class="sc"><div class="sc-label">Regime (Claude)</div><div class="sc-value" style="font-size:14px">HIGH_YIELD</div><div class="sc-sub">confidence=0.85 | bias=1.1</div></div>
+  <p>Escopo restrito a <strong>Principal Tokens (PT)</strong> — yield fixo garantido até maturidade. YT excluído para capital de usuários por incompatibilidade com a proposta DollarUp de rendimento passivo sem risco de perda do principal.</p>
+  <div class="callout-green callout">
+    <strong>Atualização V5.5.1:</strong> O agente evoluiu de single-market (apenas PT-sUSDai-OCT2026) para multi-market. A lista de mercados monitorados é carregada dinamicamente do banco de dados PostgreSQL (<code>pendle_monitored_markets</code>), sem hardcode no código. Novos mercados são adicionados pelo dashboard sem reiniciar o agente.
   </div>
 </div>
 
-<!-- 2. CONTRATOS DE IMPLEMENTAÇÃO -->
+<!-- 01 Mercados Ativos -->
 <div class="section">
-  <div class="section-label"><div class="section-num">02</div><h2>Contratos de Implementação (Spec-to-Code Mapping)</h2></div>
-  <p>Para eliminar ambiguidades na tradução de regras de negócio para código, o sistema obedece às seguintes interfaces:</p>
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>Mercados PT Monitorados — Arbitrum One</h2>
+  </div>
+  <p>Gerenciados via tabela <code>pendle_monitored_markets</code> no PostgreSQL. O agente lê a lista a cada ciclo — nenhuma alteração de código necessária para adicionar ou remover mercados.</p>
 
-  <h3>2.1 Interface do Agente Principal (Core Agent)</h3>
-  <pre><code><span class="kw">class</span> <span class="fn">PendleAllocationAgent</span>:
+  <div class="mkt-grid">
+    <div class="mkt-card">
+      <div class="mkt-row"><div class="mkt-name">PT-sUSDai-OCT2026</div><span class="mkt-status s-active">ATIVO</span></div>
+      <div class="mkt-row"><span class="mkt-key">Fixed APY</span><span class="mkt-val td-green">9.71%</span></div>
+      <div class="mkt-row"><span class="mkt-key">TVL</span><span class="mkt-val">$12.9M</span></div>
+      <div class="mkt-row"><span class="mkt-key">DTM</span><span class="mkt-val">133d</span></div>
+      <div class="mkt-row"><span class="mkt-key">Regime</span><span class="mkt-val td-green">HIGH_YIELD</span></div>
+      <div class="mkt-row"><span class="mkt-key">Decisão</span><span class="mkt-val td-blue">ROTATE_TO_PT</span></div>
+    </div>
+    <div class="mkt-card">
+      <div class="mkt-row"><div class="mkt-name">PT-USDai-OCT2026</div><span class="mkt-status s-active">ATIVO</span></div>
+      <div class="mkt-row"><span class="mkt-key">Fixed APY</span><span class="mkt-val td-green">7.48%</span></div>
+      <div class="mkt-row"><span class="mkt-key">TVL</span><span class="mkt-val">$779k</span></div>
+      <div class="mkt-row"><span class="mkt-key">DTM</span><span class="mkt-val">133d</span></div>
+      <div class="mkt-row"><span class="mkt-key">Regime</span><span class="mkt-val td-green">HIGH_YIELD</span></div>
+      <div class="mkt-row"><span class="mkt-key">Decisão</span><span class="mkt-val td-blue">ROTATE_TO_PT</span></div>
+    </div>
+    <div class="mkt-card" style="opacity:.6">
+      <div class="mkt-row"><div class="mkt-name">PT-sUSDai-JUN2026</div><span class="mkt-status s-gate">GATE DTM</span></div>
+      <div class="mkt-row"><span class="mkt-key">Fixed APY</span><span class="mkt-val td-green">9.74%</span></div>
+      <div class="mkt-row"><span class="mkt-key">TVL</span><span class="mkt-val">$8.2M</span></div>
+      <div class="mkt-row"><span class="mkt-key">DTM</span><span class="mkt-val td-amber">14d ⚠</span></div>
+      <div class="mkt-row"><span class="mkt-key">Bloqueio</span><span class="mkt-val td-amber">DTM &lt; 15d</span></div>
+    </div>
+    <div class="mkt-card" style="opacity:.6">
+      <div class="mkt-row"><div class="mkt-name">PT-thBILL-JUN2026</div><span class="mkt-status s-gate">GATE DTM</span></div>
+      <div class="mkt-row"><span class="mkt-key">Fixed APY</span><span class="mkt-val td-green">13.26%</span></div>
+      <div class="mkt-row"><span class="mkt-key">TVL</span><span class="mkt-val">$758k</span></div>
+      <div class="mkt-row"><span class="mkt-key">DTM</span><span class="mkt-val td-amber">14d ⚠</span></div>
+      <div class="mkt-row"><span class="mkt-key">Bloqueio</span><span class="mkt-val td-amber">DTM &lt; 15d</span></div>
+    </div>
+    <div class="mkt-card" style="opacity:.6">
+      <div class="mkt-row"><div class="mkt-name">PT-gUSDC-JUN2026</div><span class="mkt-status s-blocked">LOW_YIELD</span></div>
+      <div class="mkt-row"><span class="mkt-key">Fixed APY</span><span class="mkt-val">6.21%</span></div>
+      <div class="mkt-row"><span class="mkt-key">Implied</span><span class="mkt-val td-red">9.38% &gt; Fixed</span></div>
+      <div class="mkt-row"><span class="mkt-key">DTM</span><span class="mkt-val">21d</span></div>
+      <div class="mkt-row"><span class="mkt-key">Bloqueio</span><span class="mkt-val td-red">Claude LOW_YIELD</span></div>
+    </div>
+  </div>
 
-    <span class="kw">def</span> <span class="fn">observe</span>(self) -> MarketSnapshot:
-        <span class="cm">"""Coleta dados on-chain da AMM Pendle, taxas de gás e oráculos."""</span>
+  <div class="callout">
+    <strong>Auto-Descoberta:</strong> Varredura automática segunda 07h e quarta 20h (Brasília). Novos mercados PT com TVL &gt; $500k, DTM &gt; 30d e APY &gt; 3% são registrados em <code>pendle_discovery_log</code> com status <code>new</code> para revisão no dashboard. Stablecoins e T-Bills em watchlist mesmo com DTM curto.
+  </div>
+</div>
 
-    <span class="kw">def</span> <span class="fn">pre_validate</span>(self, snapshot: MarketSnapshot, ctx: AssetContext) -> PreValidationResult:
-        <span class="cm">"""Aplica filtros: TVL mínimo, Fixed APY mínimo, DaysToMaturity, limites de pool."""</span>
+<!-- 02 Arquitetura -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>Arquitetura de Componentes</h2>
+  </div>
 
-    <span class="kw">def</span> <span class="fn">execute</span>(self, decision: ExecutionDecision) -> ExecutionResult:
-        <span class="cm">"""DRY_RUN: simula. LIVE: transmite via safe_executor após Slippage Gate."""</span>
-
-    <span class="kw">def</span> <span class="fn">cooldown</span>(self, reason: str, duration: int) -> None:
-        <span class="cm">"""Aplica estado de espera conforme matriz de falhas."""</span>
-
-    <span class="kw">def</span> <span class="fn">handle_failure</span>(self, error: AgentError) -> None:
-        <span class="cm">"""Incrementa contador horário e avalia gatilhos de escalonamento de risco."""</span></code></pre>
-
-  <h3>2.2 Funções do Core Quantitativo (Quant Math Engine)</h3>
-  <pre><code><span class="kw">def</span> <span class="fn">compute_delta_net</span>(ctx: AssetContext, snapshot: MarketSnapshot) -> float:
-    <span class="cm">"""ΔNet anualizado deduzindo CTEA completo (WAD precision)."""</span>
-
-<span class="kw">def</span> <span class="fn">compute_dynamic_threshold</span>(ctx: AssetContext, volatility_24h: float) -> float:
-    <span class="cm">"""Δtarget_effective = Δtarget_base + (k × σ_24h)"""</span>
-
-<span class="kw">def</span> <span class="fn">should_enter_pt</span>(delta_net: float, threshold: float, regime_bias: float) -> bool:
-    <span class="cm">"""ΔNet &lt; -(threshold × regime_bias) → PT atrativo (mercado superprecifica yield)."""</span>
-
-<span class="kw">def</span> <span class="fn">should_exit_position</span>(pos: PositionState, snapshot: MarketSnapshot, ctx: AssetContext) -> bool:
-    <span class="cm">"""Gatilhos protetivos obrigatórios:
-    1. Quebra de Peg / risco do subjacente (LST/LRT descolando).
-    2. Fixed APY colapsou abaixo do piso histórico de segurança.
-    3. Deterioração severa de TVL e liquidez interna da AMM."""</span></code></pre>
-
-  <div class="info">Nota PT-Only: <code>should_enter_yt()</code> e <code>BREAKEVEN_VIOLATION</code> removidos do escopo. YT Decay Gate não aplicável.</div>
-
-  <h3>2.3 Arquitetura de Componentes</h3>
   <div class="arch">
-    <span style="color:var(--accent);font-weight:700">pendle_agent.py</span> <span style="color:var(--muted);font-size:11px">— Worker principal (PM2)</span><br>
-    <span style="color:var(--border)">├── </span><span style="color:var(--accent2)">safe_executor.py</span> <span style="color:var(--muted)">→ TX via Safe multisig 1-de-3</span><br>
-    <span style="color:var(--border)">├── </span><span style="color:var(--accent2)">pendle_integration.py</span> <span style="color:var(--muted)">→ Posições on-chain Arbitrum</span><br>
-    <span style="color:var(--border)">└── </span><span style="color:var(--accent2)">ai_advisor.py</span> <span style="color:var(--muted)">→ Camada AI</span><br>
-    <span style="color:transparent">────</span><span style="color:var(--border)">├── </span><span style="color:var(--accent)">claude_classify_regime()</span> <span style="color:var(--muted)">→ Classificador de regime</span><br>
-    <span style="color:transparent">────</span><span style="color:var(--border)">├── </span><span style="color:var(--accent3)">perplexity_risk_scan()</span> <span style="color:var(--muted)">→ Risk scanner web real-time</span><br>
-    <span style="color:transparent">────</span><span style="color:var(--border)">└── </span><span style="color:var(--accent2)">generate_daily_report()</span> <span style="color:var(--muted)">→ Relatório diário PT-BR</span>
+<span class="hl">main.py</span> — Orquestrador V5.5.1-multimarket (systemd)<br>
+├── <span class="hl2">load_active_markets()</span> → lê pendle_monitored_markets do banco<br>
+├── <span class="hl2">fetch_market()</span> → Pendle API v1 por mercado<br>
+├── <span class="hl2">run_ai_advisor_scheduled()</span> → Claude + Perplexity com cache<br>
+├── <span class="hl2">quant_engine</span> → ΔNet, Threshold, CTEA, YVI<br>
+├── <span class="hl2">save_to_db()</span> → pendle_recommendations (payload completo)<br>
+├── <span class="hl">auto_discovery.py</span> → varredura seg/qua, watchlist stablecoins<br>
+└── <span class="hl">ai_schedule.py</span> → cache schedule Claude/Perplexity<br>
+<br>
+<span class="hl">pendle_api.py</span> — FastAPI porta 8002 (systemd)<br>
+├── GET /pendle-api/recommendations → histórico com payload completo<br>
+├── GET /pendle-api/markets → mercados monitorados<br>
+├── POST /pendle-api/markets → adicionar mercado pelo dashboard<br>
+├── GET /pendle-api/discovery → mercados descobertos automaticamente<br>
+├── POST /pendle-api/discovery/{id}/action → adicionar ou ignorar<br>
+└── GET /pendle-api/stats, /status, /snapshots, /settings<br>
+<br>
+<span class="hl3">pendle.html</span> — Dashboard dollarup.io/pendle.html (Nginx)<br>
+├── Overview: AUM, mercados, gráfico APY, snapshot todos mercados<br>
+├── Recomendações: tabela multimarket com Quant+Claude+Perplexity<br>
+├── Mercados: gestão da lista (adicionar/pausar/remover)<br>
+├── Descobertas: novos mercados aguardando aprovação<br>
+└── Configurações: risk tolerance, intervalo, auto-execute<br>
+<br>
+<span class="hl">dollarup_db</span> (PostgreSQL 15)<br>
+├── pendle_monitored_markets — lista dinâmica de mercados<br>
+├── pendle_recommendations — histórico de recomendações + payload<br>
+├── pendle_market_snapshots — série histórica de APY por ciclo<br>
+├── pendle_discovery_log — mercados descobertos (new/watchlist/added)<br>
+└── system_flags — controle do agente (ativo, intervalo, auto-execute)
   </div>
 </div>
 
-<!-- 3. MATRIZ DE ATIVOS -->
+<!-- 03 Schedule AI -->
 <div class="section">
-  <div class="section-label"><div class="section-num">03</div><h2>Matriz de Ativos Parametrizável e Perfis de Risco Macro</h2></div>
-  <p>Nenhum parâmetro é hard-coded. O sistema lê dinamicamente um dicionário de configuração conforme <code>RISK_MODE</code>. O <code>regime_bias</code> combina o perfil ativo ao regime detectado pelo classificador AI.</p>
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>Schedule de IA — Redução de 99% das Chamadas</h2>
+  </div>
+  <p>Claude e Perplexity operam em janelas fixas com cache persistido em <code>ai_cache.json</code>. O motor quantitativo (ΔNet, Threshold, CTEA) roda a cada ciclo de 300s sem custo de API.</p>
 
-  <div class="table-wrap">
+  <div class="sched-grid">
+    <div class="sched-card">
+      <div class="sched-label">Claude — Regime</div>
+      <div class="sched-val" style="color:var(--purple)">07h + 20h</div>
+      <div class="sched-sub">8 chamadas/dia (4 mercados × 2)</div>
+      <div class="sched-sub" style="margin-top:6px;color:var(--muted)">Entre janelas: cache</div>
+    </div>
+    <div class="sched-card">
+      <div class="sched-label">Perplexity — Risco</div>
+      <div class="sched-val" style="color:var(--blue)">06h/12h/18h/00h</div>
+      <div class="sched-sub">16 chamadas/dia (4 × 4)</div>
+      <div class="sched-sub" style="margin-top:6px;color:var(--muted)">Entre janelas: cache</div>
+    </div>
+    <div class="sched-card">
+      <div class="sched-label">Auto-Descoberta</div>
+      <div class="sched-val" style="color:var(--amber)">Seg 07h / Qua 20h</div>
+      <div class="sched-sub">2 varreduras/semana</div>
+      <div class="sched-sub" style="margin-top:6px;color:var(--muted)">Pendle API (sem custo AI)</div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
     <table>
-      <thead><tr><th>Perfil</th><th>Δtarget_base</th><th>k (σ24h)</th><th>Max PT/portfolio</th><th>Max por pool</th><th>APY mínimo</th><th>DTM mínimo</th><th>Slippage</th></tr></thead>
+      <thead><tr><th>Componente</th><th>Antes</th><th>Depois</th><th>Redução</th></tr></thead>
       <tbody>
-        <tr><td><span class="pill pb">CONSERVATIVE</span></td><td>80 bps</td><td>2.0</td><td>80%</td><td>70%</td><td>5%</td><td>30d</td><td>0.05%</td></tr>
-        <tr><td><span class="pill py">NEUTRAL</span></td><td>50 bps</td><td>1.5</td><td>80%</td><td>70%</td><td>4%</td><td>20d</td><td>0.10%</td></tr>
+        <tr><td>Claude chamadas/dia</td><td class="td-red">~2.304</td><td class="td-green">8</td><td class="td-green">-99.7%</td></tr>
+        <tr><td>Perplexity chamadas/dia</td><td class="td-red">~2.304</td><td class="td-green">16</td><td class="td-green">-99.3%</td></tr>
+        <tr><td>Quant Math ciclos/dia</td><td>288</td><td class="td-green">288</td><td class="td-muted">inalterado (sem API)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 04 Classificação de Risco -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>Classificação de Risco Externo — FRONTEND vs PROTOCOL</h2>
+  </div>
+  <p>O Perplexity Risk Scanner distingue dois tipos de incidente. Apenas riscos on-chain bloqueam o agente — riscos de frontend (comprometimento de conta social, phishing, domain hijack) não afetam operações via API/contratos.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Tipo</th><th>Exemplos</th><th>Severity</th><th>Ação do Agente</th></tr></thead>
+      <tbody>
+        <tr><td class="td-muted">FRONTEND_RISK</td><td class="td-muted">Twitter comprometido, domain hijack, phishing, Discord hack</td><td>LOW/MEDIUM</td><td class="td-green">NÃO bloqueia — opera via API/contratos</td></tr>
+        <tr><td class="td-red">PROTOCOL_RISK</td><td class="td-red">Exploit de contrato, hack on-chain, depeg, governance attack, liquidity crisis</td><td>HIGH/CRITICAL</td><td class="td-red">BLOQUEIA — circuit breaker automático</td></tr>
       </tbody>
     </table>
   </div>
 
-  <h3>3.1 Limites de Alocação por Tese e Pool</h3>
-  <ul>
-    <li><strong style="color:var(--text)">Stablecoins PT:</strong> Máximo 80% do portfólio global</li>
-    <li><strong style="color:var(--text)">LRT / LST PT:</strong> Máximo 50% (risco de descolamento / slashing)</li>
-    <li><strong style="color:var(--text)">Limite por Pool:</strong> Teto rígido de 70% por pool individual (risco idiossincrásico)</li>
-  </ul>
-  <div class="info">Perfil AGGRESSIVE removido — incompatível com PT-Only para capital de usuários DollarUp.</div>
+  <div class="callout">
+    <strong>Incidente real detectado (03/06/2026):</strong> Conta X/Twitter do Pendle comprometida via social engineering. Classificado como FRONTEND_RISK — agente continuou operando normalmente. API Pendle e contratos on-chain intactos (TVL $10.8M estável).
+  </div>
+</div>
 
-  <h3>3.2 Mercados Ativos — Arbitrum One</h3>
-  <div class="table-wrap">
+<!-- 05 Motor Quantitativo -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>Motor Quantitativo V5.5 — Lógica de Decisão</h2>
+  </div>
+
+  <h3>Fórmulas Centrais</h3>
+  <pre>
+ΔNet = (Fixed APY − Implied APY) − CTEA − Risco_Saída(0.5%)
+
+CTEA = (Gas_USD + Slip_entrada + Slip_saída) / Notional × (365 / DTM)
+
+Threshold = Δtarget_base(0.0080) + k_vol(2.0) × YVI(σ24h)
+
+Decisão: ROTATE_TO_PT quando |ΔNet| > Threshold × regime_bias</pre>
+
+  <h3>Árvore de Decisão por Ciclo</h3>
+  <div class="flow">
+    <div class="flow-step"><div class="flow-dot" style="background:var(--red)"></div><div class="flow-content"><strong>1. Pre-validate (Gates):</strong> TVL &lt; mínimo → skip | DTM &lt; 15d → skip | APY &lt; 3% → skip</div></div>
+    <div class="flow-step"><div class="flow-dot" style="background:var(--purple)"></div><div class="flow-content"><strong>2. Claude (cache):</strong> regime=LOW_YIELD + conf ≥ 65% → HOLD forçado, não entra em PT</div></div>
+    <div class="flow-step"><div class="flow-dot" style="background:var(--blue)"></div><div class="flow-content"><strong>3. Perplexity (cache):</strong> severity=HIGH/CRITICAL + PROTOCOL_RISK → bloqueia agente</div></div>
+    <div class="flow-step"><div class="flow-dot" style="background:var(--amber)"></div><div class="flow-content"><strong>4. Quant:</strong> calcula ΔNet, Threshold, CTEA → compara com limiar × bias</div></div>
+    <div class="flow-step"><div class="flow-dot" style="background:var(--green)"></div><div class="flow-content"><strong>5. Decisão:</strong> ROTATE_TO_PT | HOLD_NO_OP | EXIT_PT → salva em pendle_recommendations</div></div>
+    <div class="flow-step"><div class="flow-dot" style="background:var(--muted)"></div><div class="flow-content"><strong>6. Aprovação humana:</strong> PENDING → operador aprova no dashboard → APPROVED → Safe executa</div></div>
+  </div>
+
+  <h3>Resultado Real — 04/06/2026</h3>
+  <pre>
+PT-sUSDai-OCT2026:
+  Fixed=9.71% | Implied=6.61% | TVL=$12.9M | DTM=133d
+  ΔNet=-0.0726 | Threshold=0.0080 | CTEA=9.87%
+  Claude: HIGH_YIELD conf=0.85 bias=1.10
+  Perplexity: severity=NONE safe=true
+  → REBALANCE_TO_PT | $180.57 | status=pending
+
+PT-USDai-OCT2026:
+  Fixed=7.48% | Implied=0.00% | TVL=$779k | DTM=133d
+  ΔNet=-0.0289 | Threshold=0.0080 | CTEA=9.87%
+  Claude: HIGH_YIELD conf=0.85 bias=1.10
+  → REBALANCE_TO_PT | $28.60 | status=pending
+
+PT-gUSDC-JUN2026:
+  Fixed=6.21% | Implied=9.38% | ΔNet=-0.6618
+  Claude: LOW_YIELD conf=0.85 → HOLD_NO_OP (bloqueado)</pre>
+</div>
+
+<!-- 06 Camada AI -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2>Camada Inteligente — Claude + Perplexity</h2>
+  </div>
+
+  <div class="tbl-wrap">
     <table>
-      <thead><tr><th>PT</th><th>Market Address</th><th>PT Address</th><th>Maturidade</th><th>TVL</th></tr></thead>
+      <thead><tr><th>Componente</th><th>Modelo</th><th>Função</th><th>Janelas</th><th>Fallback</th></tr></thead>
       <tbody>
         <tr>
-          <td>PT-sUSDai-OCT2026</td>
-          <td><code>0xcbf629c8...94787d8</code></td>
-          <td><code>0xb459db10...675cc</code></td>
-          <td>15/10/2026</td>
-          <td>$10.8M</td>
+          <td class="td-purple">Claude</td>
+          <td class="td-muted">claude-sonnet-4-20250514</td>
+          <td>Classifica regime: HIGH_YIELD / NEUTRAL / LOW_YIELD + bias</td>
+          <td class="td-amber">07h + 20h BRT</td>
+          <td class="td-muted">regime_bias=1.0 se conf &lt; 0.65</td>
+        </tr>
+        <tr>
+          <td class="td-blue">Perplexity</td>
+          <td class="td-muted">sonar (web real-time)</td>
+          <td>Varre exploits, hacks, governance, depeg nos protocolos</td>
+          <td class="td-amber">06h/12h/18h/00h BRT</td>
+          <td class="td-muted">safe_to_operate=true se indisponível</td>
         </tr>
       </tbody>
     </table>
   </div>
-  <pre><code><span class="cm"># Endpoint correto API Pendle (v1, não v2)</span>
-GET https://api-v2.pendle.finance/core/<span class="ac">v1</span>/42161/markets/{market_address}
 
-impliedApy            → fixed_apy       <span class="cm"># APY fixo do PT</span>
-underlyingInterestApy → underlying_apy  <span class="cm"># APY do ativo subjacente</span>
-liquidity.usd         → tvl_usd
-pt.price.usd          → pt_price</code></pre>
-</div>
-
-<!-- 4. LÓGICA QUANTITATIVA -->
-<div class="section">
-  <div class="section-label"><div class="section-num">04</div><h2>Lógica Quantitativa de Decisão e Consistência Dimensional</h2></div>
-  <p>Custos pontuais (Gas e Slippage) são anualizados dividindo pelo prazo de vencimento. Toda aritmética usa precisão WAD.</p>
-
-  <h3>4.1 CTEA Anualizado</h3>
-  <div class="formula">CTEA = (GasUSD + SlippageInUSD + SlippageOutUSD) / NotionalUSD × (365 / DaysToMaturity)</div>
-
-  <h3>4.2 ΔNet</h3>
-  <div class="formula">ΔNet = ΔTime − CTEA − RiscoSaídaAnualizado<br>
-ΔTime = fixed_apy − implied_apy<br>
-RiscoSaída = 0.005 (0.5% a.a. conservador)</div>
-
-  <h3>4.3 YVI — Yield Volatility Index (σ24h)</h3>
-  <p>Definido como o <strong>desvio padrão amostral dos valores de ΔNet calculados a cada hora nas últimas 24 horas</strong>. Baliza o limiar dinâmico:</p>
-  <div class="formula">Δtarget_effective = Δtarget_base + (k × σ24h)</div>
-
-  <h3>4.4 Árvore de Decisão PT (PT-Only)</h3>
-  <pre><code><span class="cm"># Prioridade 1 — Saída protetiva (verifica antes de qualquer entrada)</span>
-<span class="kw">if</span> fixed_apy &lt; min_fixed_apy:              → <span class="ac3">EXIT_PT</span>  <span class="cm"># APY colapsou</span>
-<span class="kw">if</span> tvl_usd &lt; min_tvl × <span class="num">0.3</span>:               → <span class="ac3">EXIT_PT</span>  <span class="cm"># TVL deteriorou</span>
-<span class="kw">if</span> days_to_maturity &lt; <span class="num">7</span> and position &gt; <span class="num">0</span>: → <span class="ac3">EXIT_PT</span>  <span class="cm"># Vencimento próximo</span>
-
-<span class="cm"># Prioridade 2 — Entrada: mercado superprecifica yield → PT atrativo</span>
-<span class="kw">if</span> delta_net &lt; -(threshold × regime_bias):  → <span class="ac">ROTATE_TO_PT</span>
-
-<span class="cm"># Prioridade 3 — Inércia: banda efetiva</span>
-<span class="kw">if</span> -threshold ≤ delta_net ≤ threshold:      → <span class="ac2">HOLD_NO_OP</span></code></pre>
-
-  <div class="info">Nota: YT Decay Gate (BreakevenDays) removido do escopo PT-Only. BREAKEVEN_VIOLATION não aplicável.</div>
-
-  <h3>4.5 CES — Capital Efficiency Score (PT)</h3>
-  <div class="formula">CES = ΔNet / CTEA<br>
-<span style="font-size:11px;color:var(--muted)">Usado para rankear pools concorrentes. Pool com maior CES recebe alocação preferencial.</span></div>
-</div>
-
-<!-- 5. CENÁRIOS DE TESTE -->
-<div class="section">
-  <div class="section-label"><div class="section-num">05</div><h2>Cenários de Teste Obrigatórios (PT-Only)</h2></div>
-  <p>A suite de testes CI/CD deve validar obrigatoriamente os seguintes comportamentos em cada RISK_MODE para os Casos A e B.</p>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Caso</th><th>Condições de Entrada</th><th>Comportamento Esperado</th><th>Flag</th></tr></thead>
-      <tbody>
-        <tr><td>A: PT Atrativo</td><td>Implied APY elevado (mercado superprecificando yield); ΔNet fortemente negativo; CTEA baixo</td><td>Trava taxa fixa adquirindo Principal Token</td><td><code>ROTATE_TO_PT</code></td></tr>
-        <tr><td>B: Zona de Inércia</td><td>ΔNet próximo de zero; YVI alto alargando bandas efetivas</td><td>Bloqueia novas TXs; mantém posição atual inalterada</td><td><code>HOLD_NO_OP</code></td></tr>
-        <tr><td>C: Exit Protetivo</td><td>Fixed APY abaixo do mínimo OU TVL colapso OU DTM &lt; 7d</td><td>Sai do PT; protege capital do usuário</td><td><code>EXIT_PT</code></td></tr>
-        <tr><td>D: Risco Externo</td><td>Perplexity severity=CRITICAL ou HIGH em protocolo do portfólio</td><td>Circuit breaker; bloqueia novas TXs; mantém posição</td><td><code>CIRCUIT_BREAKER</code></td></tr>
-        <tr><td>E: Failsafe</td><td>5+ falhas operacionais em 60 minutos</td><td>Trava assinaturas; observação passiva continua</td><td><code>CRITICAL_HALT</code></td></tr>
-        <tr><td>F: Fallback AI</td><td>confidence &lt; 0.65 ou Claude indisponível</td><td>Ignora viés do preditor; opera com equações matemáticas neutras (regime_bias=1.0)</td><td><code>FALLBACK_DETERMINISTIC_ACTIVE</code></td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- 6. CAMADA AI -->
-<div class="section">
-  <div class="section-label"><div class="section-num">06</div><h2>Camada Inteligente e Fallback Preditivo</h2></div>
-  <p>O classificador AI atua <strong>estritamente como modificador de viés</strong> das equações matemáticas. Se confiança &lt; 65%, o motor ativa o Fallback Determinístico, forçando <code>regime_bias = 1.0</code>.</p>
-
-  <div class="two-col">
-    <div class="card blue">
-      <h3 style="margin-top:0;color:var(--accent2)">Claude — Classificador de Regime</h3>
-      <ul>
-        <li>Modelo: <code>claude-sonnet-4-20250514</code></li>
-        <li>Input: snapshot JSON (fixed_apy, implied_apy, ΔNet, TVL, DTM, YVI)</li>
-        <li>Output: regime, confidence, regime_bias, reasoning</li>
-        <li>Threshold: <code>PREDICTOR_CONFIDENCE_THRESHOLD = 0.65</code></li>
-        <li>Remove markdown automático (Claude retorna com backticks)</li>
-        <li>Fallback se confidence &lt; 0.65 ou erro de API</li>
-      </ul>
-      <pre style="margin-top:16px"><code><span class="cm"># Resultado real — 03/06/2026</span>
-{
-  <span class="str">"regime"</span>:      <span class="str">"HIGH_YIELD"</span>,
-  <span class="str">"confidence"</span>:  <span class="num">0.85</span>,
-  <span class="str">"regime_bias"</span>: <span class="num">1.1</span>,
-  <span class="str">"fallback"</span>:    <span class="kw">false</span>
-}</code></pre>
-    </div>
-
-    <div class="card yellow">
-      <h3 style="margin-top:0;color:var(--accent3)">Perplexity — Risk Scanner</h3>
-      <ul>
-        <li>Modelo: <code>sonar</code> (busca web real-time)</li>
-        <li>Frequência: 1x/dia às 06h</li>
-        <li>Monitora: Pendle, sUSDai, Morpho, Compound, Aave</li>
-        <li>CRITICAL/HIGH → circuit breaker automático</li>
-        <li>Indisponível → safe_to_operate=true (não bloqueia)</li>
-      </ul>
-      <pre style="margin-top:16px"><code><span class="cm"># Resultado real — 03/06/2026</span>
-{
-  <span class="str">"risk_events"</span>:     [],
-  <span class="str">"severity"</span>:        <span class="str">"NONE"</span>,
-  <span class="str">"safe_to_operate"</span>: <span class="kw">true</span>
-}</code></pre>
-    </div>
-  </div>
-
-  <h3>6.1 Matriz de Fallback</h3>
-  <div class="table-wrap">
+  <h3>Matriz de Fallback</h3>
+  <div class="tbl-wrap">
     <table>
       <thead><tr><th>Condição</th><th>Comportamento</th><th>Flag</th></tr></thead>
       <tbody>
-        <tr><td>confidence &lt; 0.65</td><td>regime_bias = 1.0 (neutro forçado)</td><td><code>FALLBACK_DETERMINISTIC_ACTIVE</code></td></tr>
-        <tr><td>Claude indisponível / timeout</td><td>Fallback ativo automaticamente</td><td><code>FALLBACK_DETERMINISTIC_ACTIVE</code></td></tr>
-        <tr><td>JSON inválido retornado</td><td>Retorna dict fallback padrão</td><td><code>FALLBACK_DETERMINISTIC_ACTIVE</code></td></tr>
-        <tr><td>Perplexity indisponível</td><td>safe_to_operate = true (não bloqueia)</td><td><code>PERPLEXITY_UNAVAILABLE</code></td></tr>
+        <tr><td>conf &lt; 0.65</td><td>regime_bias = 1.0 (neutro)</td><td class="td-amber">FALLBACK_DETERMINISTIC_ACTIVE</td></tr>
+        <tr><td>Claude indisponível</td><td>Fallback ativo automaticamente</td><td class="td-amber">FALLBACK_DETERMINISTIC_ACTIVE</td></tr>
+        <tr><td>Perplexity indisponível</td><td>safe_to_operate = true</td><td class="td-muted">PERPLEXITY_UNAVAILABLE</td></tr>
+        <tr><td>LOW_YIELD + conf ≥ 0.65</td><td>HOLD forçado — bloqueia entrada em PT</td><td class="td-red">REGIME_BLOCKS_ENTRY</td></tr>
+        <tr><td>PROTOCOL_RISK HIGH/CRITICAL</td><td>Circuit breaker — bloqueia agente</td><td class="td-red">RISK_CIRCUIT_BREAKER</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- 7. INFRAESTRUTURA E COOLDOWN -->
+<!-- 07 Dashboard -->
 <div class="section">
-  <div class="section-label"><div class="section-num">07</div><h2>Infraestrutura, Matriz de Cooldown e Protocolo de Saída</h2></div>
-  <p>Erros operacionais disparam tempos de descanso específicos conforme a gravidade da falha detectada.</p>
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2>Dashboard — dollarup.io/pendle.html</h2>
+  </div>
+  <p>Interface de monitoramento e aprovação em tempo real. Auto-refresh a cada 30s.</p>
 
-  <div class="table-wrap">
+  <div class="tbl-wrap">
     <table>
-      <thead><tr><th>Tipo de Erro</th><th>Cooldown</th><th>Saída</th></tr></thead>
+      <thead><tr><th>Aba</th><th>Conteúdo</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>RPC_ERROR</td><td>60s</td><td>Automática</td></tr>
-        <tr><td>API_ERROR</td><td>120s</td><td>Automática</td></tr>
-        <tr><td>SLIPPAGE_EXCEEDED</td><td>300s</td><td>Automática</td></tr>
-        <tr><td>TX_REVERTED</td><td>600s</td><td>Automática</td></tr>
-        <tr><td><strong style="color:var(--danger)">CRITICAL_HALT</strong></td><td>∞</td><td><strong style="color:var(--danger)">Manual obrigatório</strong></td></tr>
+        <tr><td class="td-amber">Overview</td><td>AUM, mercados ativos, gráfico APY history, snapshot todos os mercados com Quant+Claude+Perplexity por linha</td><td><span class="badge b-done">ATIVO</span></td></tr>
+        <tr><td class="td-amber">Recomendações</td><td>Tabela multimarket com ΔNet, Threshold, CTEA, DTM, Regime, Conf, Fallback, Severity, Safe, Ação, APY, Amount, Status. Botões aprovar/rejeitar.</td><td><span class="badge b-done">ATIVO</span></td></tr>
+        <tr><td class="td-amber">Mercados</td><td>Cards de cada PT monitorado com PAUSAR/REMOVER. Formulário para adicionar novos mercados colando endereços.</td><td><span class="badge b-done">ATIVO</span></td></tr>
+        <tr><td class="td-amber">Descobertas</td><td>Mercados descobertos automaticamente (new/watchlist). Botões ADICIONAR/IGNORAR com um clique.</td><td><span class="badge b-done">ATIVO</span></td></tr>
+        <tr><td class="td-amber">Configurações</td><td>Risk tolerance, intervalo de ciclo, auto-execute toggle.</td><td><span class="badge b-done">ATIVO</span></td></tr>
+        <tr><td class="td-muted">Portfólio</td><td>Posições PT reais da Safe: PT Balance, APY fixo garantido, valor no vencimento, ganho implícito, barra de progresso.</td><td><span class="badge b-pend">PENDENTE</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 08 Infraestrutura -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2>Infraestrutura e Variáveis de Ambiente</h2>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Serviço</th><th>Tipo</th><th>Porta/Path</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>pendle-agent</td><td class="td-muted">systemd</td><td class="td-muted">/home/dollarup/apps/pendle-agent/agent/main.py</td><td><span class="badge b-done">RUNNING</span></td></tr>
+        <tr><td>pendle-api</td><td class="td-muted">systemd · FastAPI</td><td class="td-muted">:8002 → /pendle-api/</td><td><span class="badge b-done">RUNNING</span></td></tr>
+        <tr><td>Nginx</td><td class="td-muted">proxy</td><td class="td-muted">dollarup.io/pendle.html + /pendle-api/</td><td><span class="badge b-done">RUNNING</span></td></tr>
+        <tr><td>PostgreSQL 15</td><td class="td-muted">dollarup_db</td><td class="td-muted">5 tabelas pendle_*</td><td><span class="badge b-done">RUNNING</span></td></tr>
       </tbody>
     </table>
   </div>
 
-  <h3>7.1 Protocolo de Saída de CRITICAL_HALT</h3>
-  <div class="card red">
-    <p style="margin:0;color:#fca5a5">Uma vez em travamento, o agente <strong>interrompe assinaturas e TXs on-chain</strong>, mas mantém em background as rotinas <code>observe()</code> e <code>pre_validate()</code> de forma passiva para telemetria.</p>
-    <br>
-    <p style="margin:0;color:#fca5a5"><strong>Não há saída automática via cron ou scripts.</strong> O destravamento exige intervenção manual do operador: setar <code>PENDLE_AGENT_HALT=false</code> no .env e reiniciar o worker.</p>
-  </div>
+  <pre>
+# Agente
+PENDLE_EXECUTION_MODE=DRY_RUN       # DRY_RUN | LIVE
+PENDLE_RISK_MODE=CONSERVATIVE       # CONSERVATIVE | NEUTRAL
 
-  <h3>7.2 Variáveis de Ambiente</h3>
-  <pre><code><span class="cm"># Controle do agente</span>
-<span class="ac">PENDLE_EXECUTION_MODE</span>=DRY_RUN       <span class="cm"># DRY_RUN | LIVE</span>
-<span class="ac">PENDLE_RISK_MODE</span>=CONSERVATIVE       <span class="cm"># CONSERVATIVE | NEUTRAL</span>
-<span class="ac">PENDLE_AGENT_HALT</span>=false             <span class="cm"># true = CRITICAL_HALT manual</span>
+# AI Schedule
+ANTHROPIC_API_KEY=sk-ant-...        # Claude regime classifier
+PERPLEXITY_API_KEY=pplx-...         # Risk scanner
 
-<span class="cm"># AI Advisor</span>
-<span class="ac2">ANTHROPIC_API_KEY</span>=sk-ant-...
-<span class="ac3">PERPLEXITY_API_KEY</span>=pplx-...
+# Safe (Arbitrum)
+SAFE_ADDRESS=0xBD20A8962B98633f8FC7728F815789b7a90aecE3
+ARBITRUM_RPC_URL=https://arb-mainnet.g.alchemy.com/v2/...
 
-<span class="cm"># Safe (já configurado)</span>
-SAFE_ADDRESS=0xBD20A8962B98633f8FC7728F815789b7a90aecE3</code></pre>
-  <div class="warning">Chaves ANTHROPIC_API_KEY e PERPLEXITY_API_KEY expostas em log. Revogar em console.anthropic.com e perplexity.ai/settings/api.</div>
+# DB (compartilhado com DollarUp app)
+DATABASE_URL=postgresql+asyncpg://dollarup_user:...@localhost/dollarup_db</pre>
 </div>
 
-<!-- 8. TELEMETRIA -->
+<!-- 09 Fluxo de Aprovação -->
 <div class="section">
-  <div class="section-label"><div class="section-num">08</div><h2>Governança de Telemetria, Retenção e Reprodutibilidade</h2></div>
-  <p>Todos os payloads são estruturados em JSON e persistidos em <code>pendle_telemetry.jsonl</code> com retenção mínima de 12-24 meses para auditoria regulatória e tuning de modelos.</p>
-
-  <div class="card">
-    <p style="margin:0;color:var(--accent)"><strong>Garantia de Atomicidade:</strong> Em modo LIVE, o payload completo é gravado ANTES da TX ser submetida. O <code>replay_id</code> contém contexto exato e imutável da decisão — mesmo em crash do nó, a decisão é auditável.</p>
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <h2>Fluxo de Aprovação e Execução</h2>
   </div>
 
-  <h3>8.1 Schema V5.5.1 — Payload Completo</h3>
-  <pre><code>{
-  <span class="str">"timestamp"</span>:      <span class="num">1780497708</span>,
-  <span class="str">"replay_id"</span>:      <span class="str">"arb-pendle-v5.5.1-pt-only-1780497708"</span>,
-  <span class="str">"execution_mode"</span>: <span class="str">"DRY_RUN"</span>,
-  <span class="str">"risk_profile"</span>:   <span class="str">"CONSERVATIVE"</span>,
+  <div class="callout">
+    <strong>Modo atual: DRY_RUN.</strong> Nenhuma TX on-chain é executada. O botão EXEC no dashboard simula e loga a operação. Para ir LIVE, alterar <code>PENDLE_EXECUTION_MODE=LIVE</code> e reiniciar o agente.
+  </div>
 
-  <span class="str">"strategy_intent"</span>: {
-    <span class="str">"regime_label"</span>:        <span class="str">"HIGH_YIELD"</span>,
-    <span class="str">"model_confidence"</span>:    <span class="num">0.85</span>,
-    <span class="str">"fallback_active"</span>:     <span class="kw">false</span>,
-    <span class="str">"entry_reason"</span>:        <span class="str">"ΔNet=-0.0091 &lt; -threshold(0.0080×1.0)"</span>,
-    <span class="str">"validation_gate_logs"</span>: <span class="str">"ALL_GATES_PASSED"</span>
-  },
-
-  <span class="str">"metrics"</span>: {
-    <span class="str">"fixed_apy"</span>:          <span class="num">0.0971</span>,
-    <span class="str">"implied_apy"</span>:        <span class="num">0.0661</span>,
-    <span class="str">"underlying_apy_7d"</span>:  <span class="num">0.0661</span>,
-    <span class="str">"tvl_usd"</span>:            <span class="num">10801147</span>,
-    <span class="str">"days_to_maturity"</span>:   <span class="num">133</span>,
-    <span class="str">"yvi_volatility_24h"</span>: <span class="num">0.0</span>
-  },
-
-  <span class="str">"cost_breakdown"</span>: {
-    <span class="str">"gas_usd"</span>:            <span class="num">0.50</span>,
-    <span class="str">"slippage_entry_usd"</span>: <span class="num">0.021</span>,
-    <span class="str">"slippage_exit_usd"</span>:  <span class="num">0.021</span>,
-    <span class="str">"notional_usd"</span>:       <span class="num">42.37</span>,
-    <span class="str">"ctea_annualized"</span>:    <span class="num">0.0351</span>
-  },
-
-  <span class="str">"capital_efficiency"</span>: {
-    <span class="str">"ces_score"</span>:              <span class="num">1.85</span>,
-    <span class="str">"recommended_allocation_pct"</span>: <span class="num">0.038</span>,
-    <span class="str">"competing_pools"</span>:        []
-  },
-
-  <span class="str">"ai_advisor"</span>: {
-    <span class="str">"claude_regime"</span>:       <span class="str">"HIGH_YIELD"</span>,
-    <span class="str">"claude_confidence"</span>:   <span class="num">0.85</span>,
-    <span class="str">"claude_bias"</span>:         <span class="num">1.1</span>,
-    <span class="str">"perplexity_severity"</span>: <span class="str">"NONE"</span>,
-    <span class="str">"perplexity_safe"</span>:     <span class="kw">true</span>
-  },
-
-  <span class="str">"execution_engine"</span>: {
-    <span class="str">"current_state"</span>:         <span class="str">"OBSERVING"</span>,
-    <span class="str">"delta_net_calculated"</span>:  <span class="num">-0.0091</span>,
-    <span class="str">"delta_target_effective"</span>: <span class="num">0.0080</span>,
-    <span class="str">"action_recommended"</span>:    <span class="str">"ROTATE_TO_PT_SIMULATED"</span>,
-    <span class="str">"min_out_calculated"</span>:    <span class="num">0.9995</span>
-  },
-
-  <span class="str">"infrastructure_health"</span>: {
-    <span class="str">"hourly_failure_count"</span>:    <span class="num">0</span>,
-    <span class="str">"current_state_machinery"</span>: <span class="str">"OBSERVING"</span>,
-    <span class="str">"active_cooldown_reason"</span>:  <span class="str">"NONE"</span>,
-    <span class="str">"critical_halt"</span>:           <span class="kw">false</span>
-  }
-}</code></pre>
+  <div class="flow" style="margin-top:16px">
+    <div class="flow-step"><div class="flow-dot" style="background:var(--muted)"></div><div class="flow-content"><strong>1. Agente analisa</strong> → salva em pendle_recommendations com status=pending</div></div>
+    <div class="flow-step"><div class="flow-dot" style="background:var(--amber)"></div><div class="flow-content"><strong>2. Dashboard mostra</strong> → operador revisa ΔNet, Regime, Risco e clica EXEC (✓)</div></div>
+    <div class="flow-step"><div class="flow-dot" style="background:var(--amber)"></div><div class="flow-content"><strong>3. status=approved</strong> → agente detecta no próximo ciclo (até 300s)</div></div>
+    <div class="flow-step"><div class="flow-dot" style="background:var(--blue)"></div><div class="flow-content"><strong>4. safe_executor.py</strong> → constrói calldata Pendle Router V3, assina via Safe multisig 1-de-3</div></div>
+    <div class="flow-step"><div class="flow-dot" style="background:var(--green)"></div><div class="flow-content"><strong>5. status=executed</strong> → TX hash registrado, AUM debitado, posição PT criada on-chain</div></div>
+  </div>
 </div>
 
-<!-- PENDENTE -->
+<!-- 10 Pendências -->
 <div class="section">
-  <div class="section-label"><div class="section-num">09</div><h2>Implementações Pendentes</h2></div>
-  <div class="table-wrap">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <h2>Backlog — Implementações Pendentes</h2>
+  </div>
+
+  <div class="tbl-wrap">
     <table>
       <thead><tr><th>#</th><th>Item</th><th>Prioridade</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td>1</td><td>Integrar ai_advisor.py no ciclo principal do pendle_agent.py</td><td><span class="pill pr">URGENTE</span></td><td>Pendente</td></tr>
-        <tr><td>2</td><td>Adicionar pendle-agent ao PM2</td><td><span class="pill pr">ALTA</span></td><td>Pendente</td></tr>
-        <tr><td>3</td><td>Revogar e regenerar chaves API (ANTHROPIC + PERPLEXITY)</td><td><span class="pill pr">URGENTE</span></td><td>Pendente</td></tr>
-        <tr><td>4</td><td>Auto-descoberta de novos mercados PT na Arbitrum</td><td><span class="pill py">MÉDIA</span></td><td>Pendente</td></tr>
-        <tr><td>5</td><td>Dashboard de visualização (pendle.html)</td><td><span class="pill py">MÉDIA</span></td><td>Pendente</td></tr>
-        <tr><td>6</td><td>Relatório diário via email (Zapier webhook)</td><td><span class="pill pb">BAIXA</span></td><td>Pendente</td></tr>
-        <tr><td>7</td><td>Persistência telemetria em PostgreSQL + TimescaleDB</td><td><span class="pill pb">BAIXA</span></td><td>Pendente</td></tr>
+        <tr><td class="td-muted">1</td><td>Execução on-chain real — calldata Pendle Router V3 via safe_executor.py</td><td>ALTA</td><td><span class="badge b-pend">PENDENTE</span></td></tr>
+        <tr><td class="td-muted">2</td><td>Aba Portfólio no dashboard — posições PT reais da Safe com barra de progresso</td><td>ALTA</td><td><span class="badge b-pend">PENDENTE</span></td></tr>
+        <tr><td class="td-muted">3</td><td>Gráfico APY History — média semanal + linha de predição próxima semana</td><td>MÉDIA</td><td><span class="badge b-pend">PENDENTE</span></td></tr>
+        <tr><td class="td-muted">4</td><td>Tooltips no dashboard — ao clicar (não hover) abre card formatado</td><td>MÉDIA</td><td><span class="badge b-pend">PENDENTE</span></td></tr>
+        <tr><td class="td-muted">5</td><td>Notificação quando auto-descoberta encontrar mercado com TVL &gt; $2M</td><td>MÉDIA</td><td><span class="badge b-pend">PENDENTE</span></td></tr>
+        <tr><td class="td-muted">6</td><td>Rollover automático quando PT próximo do vencimento — detecta nova versão</td><td>MÉDIA</td><td><span class="badge b-pend">PENDENTE</span></td></tr>
+        <tr><td class="td-muted">7</td><td>Relatório diário PT-BR via email (Zapier webhook)</td><td>BAIXA</td><td><span class="badge b-pend">PENDENTE</span></td></tr>
+        <tr><td class="td-muted">8</td><td>Nexus Mutual insurance — diferido até AUM &gt; R$2M</td><td>BAIXA</td><td><span class="badge b-pend">DIFERIDO</span></td></tr>
+        <tr><td class="td-muted">—</td><td>ai_advisor.py integração no ciclo</td><td>—</td><td><span class="badge b-done">CONCLUÍDO</span></td></tr>
+        <tr><td class="td-muted">—</td><td>Auto-descoberta de mercados + watchlist stablecoins</td><td>—</td><td><span class="badge b-done">CONCLUÍDO</span></td></tr>
+        <tr><td class="td-muted">—</td><td>Schedule cache Claude/Perplexity (99% redução chamadas)</td><td>—</td><td><span class="badge b-done">CONCLUÍDO</span></td></tr>
+        <tr><td class="td-muted">—</td><td>Dashboard multimarket com 5 abas</td><td>—</td><td><span class="badge b-done">CONCLUÍDO</span></td></tr>
+        <tr><td class="td-muted">—</td><td>Classificação FRONTEND vs PROTOCOL risk</td><td>—</td><td><span class="badge b-done">CONCLUÍDO</span></td></tr>
+        <tr><td class="td-muted">—</td><td>Bug LOW_YIELD bloqueando entrada incorretamente</td><td>—</td><td><span class="badge b-done">CORRIGIDO</span></td></tr>
+        <tr><td class="td-muted">—</td><td>pendle_monitored_markets — lista dinâmica via banco</td><td>—</td><td><span class="badge b-done">CONCLUÍDO</span></td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- FOOTER -->
+<!-- Footer -->
 <div class="footer">
-  <div class="footer-brand">DollarUp · Pendle Agent V5.5.1</div>
-  <div class="footer-meta">PT-Only · Arbitrum One · Junho 2026 · Confidencial</div>
+  <div class="footer-left">DollarUp · Pendle Agent V5.5.1-multimarket · Arbitrum One</div>
+  <div class="footer-right">Junho 2026 · Confidencial</div>
 </div>
 
 </div>
